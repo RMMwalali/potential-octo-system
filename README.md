@@ -38,4 +38,4 @@ npm install
 npm run dev
 ```
 
-Built with React, TypeScript and Vite. Type follows sweet-tape.com: Inter Tight for text, and Futura PT Condensed for headlines when an Adobe Fonts kit is added (Barlow Condensed is the free fallback). AI-assisted tools were used during development, as the hackathon rules allow.
+Built with React, TypeScript and Vite. Headlines in Bowlby One, text in Inter Tight, notes in Nothing You Could Do (all free, OFL). 3D hero in three.js; scroll animation with GSAP ScrollTrigger. Visual direction inspired by sweet-tape.com. AI-assisted tools were used during development, as the hackathon rules allow.
