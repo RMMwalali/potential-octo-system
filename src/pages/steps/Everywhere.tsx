@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Badge } from '../../components/Badge'
+import { Spot } from '../../components/Notes'
 
 export function Everywhere() {
   const [showHidden, setShowHidden] = useState(false)
@@ -21,6 +22,7 @@ export function Everywhere() {
             <p className="post-author">Nairobi Weather Desk</p>
             <p>Heavy rain expected in Nairobi from 3pm. Avoid low-lying roads near the river.</p>
           </div>
+          <Spot n={1} title="One badge, one meaning, everywhere" note="The same shapes and words appear in calls, replies, dating and reviews. Learn them once, read them anywhere. Tap any badge for what it proves and what it keeps private.">
           <ul className="replies">
             <li>
               <p className="reply-head">
@@ -37,9 +39,12 @@ export function Everywhere() {
               <p>Thanks. Rescheduling pickup to tomorrow.</p>
             </li>
           </ul>
+          </Spot>
+          <Spot n={2} place="tl" title="Hidden, never deleted" note="Unverified replies are folded away by default but always one tap from view. Filtering protects people without silencing anyone.">
           <button type="button" className="hidden-replies" aria-expanded={showHidden} onClick={() => setShowHidden((s) => !s)}>
             {showHidden ? 'Hide' : 'Show'} 214 replies from accounts that aren't verified
           </button>
+          </Spot>
           {showHidden && (
             <p className="hidden-sample">
               Hidden by default, never deleted. You choose whether to read them.

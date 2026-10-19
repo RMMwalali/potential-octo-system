@@ -3,6 +3,7 @@ import { Phone } from '../../components/Phone'
 import { EyeIcon, EyeOffIcon, PhoneIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
 import { callApp, company } from '../../data'
+import { Spot } from '../../components/Notes'
 
 type Share = { app: string; what: string; when: string }
 
@@ -32,7 +33,9 @@ export function Wallet({ onDone }: { onDone: () => void }) {
           <li>Optional details are off-by-default switches she can see and change.</li>
           <li>A share log answers "who knows what about me?" at any time.</li>
         </ul>
-        <LostPhone />
+        <Spot n={3} title="Recovery kills the old phone first" note="Losing a phone shouldn't mean losing your identity to whoever finds it. Cancelling is one step with an in-page confirmation, and getting back in needs a face-to-face check.">
+          <LostPhone />
+        </Spot>
       </div>
 
       <Phone label="Amara's phone, Proofline wallet" owner="Amara's phone">
@@ -45,6 +48,7 @@ export function Wallet({ onDone }: { onDone: () => void }) {
                   <strong>{callApp}</strong> wants to confirm it's you joining "Q4 payments sync"
                 </span>
               </p>
+              <Spot n={1} title="Consent before sharing, not after" note="'They'll see' and 'They'll never see' sit side by side on every request, before Amara agrees. The never-see list grows as she switches things off.">
               <div className="request-split">
                 <div>
                   <h3>
@@ -66,11 +70,14 @@ export function Wallet({ onDone }: { onDone: () => void }) {
                   </ul>
                 </div>
               </div>
+              </Spot>
+              <Spot n={2} title="Off by default" place="tl" note="Anything beyond the yes/no answer is an extra she has to switch on. The safest choice is the one that takes no effort.">
               <label className="switch">
                 <input type="checkbox" checked={employer} onChange={(e) => setEmployer(e.target.checked)} />
                 <span className="switch-track" aria-hidden="true" />
                 <span>Also share my employer</span>
               </label>
+              </Spot>
               <div className="request-actions">
                 <button type="button" className="btn btn-primary btn-block" onClick={share} data-tour="wallet-share">
                   Share with {callApp}

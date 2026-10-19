@@ -2275,3 +2275,200 @@ html.a11y-still .wave-straight-track {
     justify-content: space-between;
   }
 }
+
+/* ───────── Designer's notes ───────── */
+.notes-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px 0 6px;
+  border-radius: 999px;
+  border: 2px solid var(--forest);
+  background: transparent;
+  color: var(--forest);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.notes-toggle-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.notes-toggle[aria-pressed='true'] {
+  background: var(--forest);
+  color: #fff;
+}
+
+.notes-toggle:focus-visible {
+  border-radius: 999px;
+}
+
+.spot {
+  position: relative;
+  min-width: 0;
+}
+
+span.spot {
+  display: inline-flex;
+}
+
+.spot > .phone {
+  margin-inline: auto;
+}
+
+.spot-ui {
+  position: absolute;
+  z-index: 30;
+}
+
+.spot-tr {
+  top: -12px;
+  right: -12px;
+}
+
+.spot-tl {
+  top: -12px;
+  left: -12px;
+}
+
+.spot-br {
+  bottom: -12px;
+  right: -12px;
+}
+
+.spot-pin {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: var(--orange);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 14px -6px rgba(8, 25, 14, 0.6);
+  animation: pin-pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.spot-pin::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  animation: pin-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.spot-pin[aria-expanded='true'] {
+  background: var(--forest);
+  color: var(--lime);
+}
+
+.spot-pin:focus-visible {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--forest), 0 0 0 6px var(--lime);
+}
+
+@keyframes pin-pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes pin-ring {
+  from {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.spot-card {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  width: min(300px, 78vw);
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--forest);
+  color: #eef7e8;
+  font-size: 0.92rem;
+  font-weight: 450;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 20px 40px -16px rgba(8, 25, 14, 0.7);
+  animation: phone-in 0.25s ease-out both;
+}
+
+.spot-card strong {
+  color: var(--lime);
+  font-weight: 800;
+}
+
+.spot-tl .spot-card {
+  right: auto;
+  left: 0;
+}
+
+.spot-br .spot-card {
+  top: auto;
+  bottom: 38px;
+}
+
+@media (max-width: 640px) {
+  .notes-toggle {
+    padding: 0 10px 0 5px;
+    font-size: 0.82rem;
+  }
+}
+
+/* Header fit with the extra switches */
+.stepper-label {
+  white-space: nowrap;
+}
+
+@media (max-width: 1360px) {
+  .stepper-label {
+    display: none;
+  }
+  .is-current .stepper-label {
+    display: inline;
+  }
+}
+
+@media (max-width: 860px) {
+  .demo-nav {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .demo-tools {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .demo-play {
+    width: 100%;
+  }
+}

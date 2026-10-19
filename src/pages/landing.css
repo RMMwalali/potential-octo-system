@@ -1018,3 +1018,20 @@
 .sealed:has(.tape.is-dragging) strong {
   visibility: visible;
 }
+
+@media (max-width: 640px) {
+  .landing .site-nav {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .landing .site-nav nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .landing .site-nav nav .btn-small {
+    display: none;
+  }
+  .hero {
+    padding-top: 150px;
+  }
+}

@@ -5,6 +5,7 @@ import { useT } from '../i18n'
 import { Badge } from './Badge'
 import { CameraIcon, HangUpIcon, MicOffIcon, PhoneIcon, UsersIcon } from './icons'
 import { Portrait } from './Portrait'
+import { Spot } from './Notes'
 
 /**
  * Stage 0: everyone being checked. 1: Wanjiru confirmed. 2: Brian confirmed.
@@ -51,6 +52,7 @@ export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
         </span>
       </header>
 
+      <Spot n={1} place="tl" title="The warning sits on the person" note="The verdict appears on David's own tile, where Amara is already looking, not in a settings menu. Three things change at once: badge, outline and wording.">
       <div className="call-grid">
         <Tile
           personId="david"
@@ -65,11 +67,13 @@ export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
         <Tile personId="brian" hair="short" status={stage >= 2 ? 'confirmed' : 'checking'} justConfirmed={stage >= 2} />
         <Tile personId="amara" hair="long" self status="confirmed" />
       </div>
+      </Spot>
 
       <p className="call-caption">
         <span className="caption-who">David</span> {t('call.caption')}
       </p>
 
+      <Spot n={2} title="Verdict in plain words" place="br" note="One sentence says what Proofline found and who it's about. No scores or percentages: people act on words like 'can't confirm', not on '62% match'.">
       <div className={`trust-bar ${denied ? 'is-stop' : done ? 'is-warn' : ''}`} aria-live="polite">
         <span className="trust-mark" aria-hidden="true">
           P
@@ -102,9 +106,11 @@ export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
         )}
         {done && mode === 'demo' && (ask === 'idle' || ask === 'yes') && (
           <span className="trust-actions">
-            <button type="button" className="trust-action trust-primary" onClick={() => setAsk('sent')}>
-              <PhoneIcon size={16} /> {t('call.ask')}
-            </button>
+            <Spot as="span" n={3} title="Check outside the call" note="The question goes to David's registered phone, a channel the impostor can't see or answer. That's the one thing a deepfake can't copy.">
+              <button type="button" className="trust-action trust-primary" onClick={() => setAsk('sent')}>
+                <PhoneIcon size={16} /> {t('call.ask')}
+              </button>
+            </Spot>
             <button type="button" className="trust-action" aria-expanded={advice} onClick={() => setAdvice((a) => !a)}>
               {advice ? t('call.hideAdvice') : t('call.advice')}
             </button>
@@ -116,6 +122,8 @@ export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
           </button>
         )}
       </div>
+
+      </Spot>
 
       {mode === 'demo' && ask === 'ringing' && (
         <div className="call-phone" role="dialog" aria-label={t('call.phone.who')}>

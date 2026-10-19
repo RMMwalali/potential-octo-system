@@ -3,6 +3,7 @@ import { isStill } from '../../a11y'
 import { Phone } from '../../components/Phone'
 import { FaceScanIcon, IdCardIcon, LockIcon, WalletIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
+import { Spot } from '../../components/Notes'
 
 const stages = ['Scan your ID', 'Take a quick selfie', 'Saved to your wallet'] as const
 
@@ -37,11 +38,13 @@ export function Verify({ onDone }: { onDone: () => void }) {
 
       <Phone label="Amara's phone, Proofline setup" owner="Amara's phone">
         <div className="setup">
-          <div className="setup-progress" aria-hidden="true">
-            {stages.map((s, i) => (
-              <span key={s} className={i <= stage ? 'on' : ''} />
-            ))}
-          </div>
+          <Spot n={1} title="One task per screen" note="Each screen asks for one thing, and progress shows twice: as a bar and in words ('Step 1 of 3'), so it reads the same with or without sight of the bar.">
+            <div className="setup-progress" aria-hidden="true">
+              {stages.map((s, i) => (
+                <span key={s} className={i <= stage ? 'on' : ''} />
+              ))}
+            </div>
+          </Spot>
           <p className="setup-count" aria-live="polite">
             Step {Math.min(stage + 1, 3)} of 3: {stages[Math.min(stage, 2)]}
           </p>
@@ -57,9 +60,11 @@ export function Verify({ onDone }: { onDone: () => void }) {
               <button type="button" className="btn btn-primary btn-block" onClick={run} disabled={busy} data-tour="verify-scan">
                 {busy ? 'Reading your ID…' : 'Scan ID'}
               </button>
-              <button type="button" className="link-btn" aria-expanded={alt} onClick={() => setAlt((a) => !a)}>
-                I don't have an ID with me
-              </button>
+              <Spot n={2} title="No vouching, on purpose" place="tl" note="An early version let verified colleagues vouch for you. We cut it: if one fake account got verified, it could vouch for the next. The fallback is a face-to-face ID check.">
+                <button type="button" className="link-btn" aria-expanded={alt} onClick={() => setAlt((a) => !a)}>
+                  I don't have an ID with me
+                </button>
+              </Spot>
               {alt && (
                 <div className="alt-path">
                   <IdCardIcon size={16} />

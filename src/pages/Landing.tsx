@@ -9,6 +9,7 @@ import { Wordmark } from '../components/Wordmark'
 import './landing.css'
 import { isStill, useStill } from '../a11y'
 import { LangToggle, useT } from '../i18n'
+import { NotesToggle, Spot } from '../components/Notes'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -224,6 +225,7 @@ export function Landing() {
         <nav aria-label="Main">
           <a href="#signals">{t('nav.proves')}</a>
           <a href="#privacy">{t('nav.privacy')}</a>
+          <NotesToggle />
           <LangToggle />
           <a href="#/demo/1" className="btn btn-primary btn-small">
             {t('nav.demo')}
@@ -255,7 +257,9 @@ export function Landing() {
               <PlayStoryButton className="btn btn-ghost btn-big" />
             </div>
           </div>
-          <HeroStage />
+          <Spot n={1} title="One moment of motion, with a point" note="The only thing that moves on its own is the fake David's tile flipping to a warning. Everything else waits for you to scroll or tap, so the story is the motion.">
+            <HeroStage />
+          </Spot>
         </section>
 
         {/* ───────── Curved marquee ───────── */}
@@ -336,6 +340,7 @@ export function Landing() {
               see exactly what it means.
             </p>
           </div>
+          <Spot n={2} title="Two questions, kept apart" note="'Is this a real person?' and 'Is this the right person?' get different badges and different shapes. The $25M scammers were real humans, so a 'not a bot' badge alone would have stayed green.">
           <div className="proofs-grid">
             <article className="proof-card card-forest">
               <span className="proof-icon sticker-lime">
@@ -367,6 +372,7 @@ export function Landing() {
               <p className="proof-where">Reviews, seller ratings</p>
             </article>
           </div>
+          </Spot>
           <aside className="insight">
             <span className="insight-hand" aria-hidden="true">
               the important bit
@@ -422,6 +428,7 @@ export function Landing() {
               </p>
             </div>
 
+            <Spot n={3} title="Privacy you can touch" note="Tape makes 'what the app never gets' physical. Sealed is the default, only the owner can peel it, and each strip is a real button for keyboard users.">
             <div className="huddle-card">
               <p className="huddle-head">
                 <span className="app-dot" aria-hidden="true">
@@ -452,6 +459,7 @@ export function Landing() {
                 ))}
               </ul>
             </div>
+            </Spot>
           </div>
         </section>
 

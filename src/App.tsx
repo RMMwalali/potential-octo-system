@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { TourProvider } from './components/Tour'
 import { A11yPanel } from './components/A11yPanel'
 import { LangProvider } from './i18n'
+import { NotesProvider } from './components/Notes'
 
 const loadDemo = () => import('./pages/Demo')
 const Demo = lazy(() => loadDemo().then((m) => ({ default: m.Demo })))
@@ -40,6 +41,7 @@ export default function App() {
 
   return (
     <LangProvider>
+    <NotesProvider>
     <TourProvider>
       <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus() }}>
         Skip to content
@@ -49,6 +51,7 @@ export default function App() {
       </Suspense>
       <A11yPanel />
     </TourProvider>
+    </NotesProvider>
     </LangProvider>
   )
 }

@@ -4,6 +4,7 @@ import { Phone } from '../../components/Phone'
 import { PhoneIcon } from '../../components/icons'
 import { amount, company, payee } from '../../data'
 import { useT } from '../../i18n'
+import { Spot } from '../../components/Notes'
 
 type Stage = 'review' | 'waiting' | 'stopped' | 'approved' | 'timeout' | 'cancelled'
 
@@ -44,7 +45,9 @@ export function Wire({ onDone }: { onDone: () => void }) {
 
           <div className="bank-body">
             <p className="bank-kicker">{t('wire.kicker')}</p>
-            <p className="bank-amount">{amount}</p>
+            <Spot n={1} title="Make the stakes visible" note="The amount is the biggest thing on the screen. Big numbers slow people down, which is exactly what pressure scams try to stop.">
+              <p className="bank-amount">{amount}</p>
+            </Spot>
             <dl className="bank-facts">
               <div>
                 <dt>{t('wire.to')}</dt>
@@ -62,10 +65,12 @@ export function Wire({ onDone }: { onDone: () => void }) {
 
             {stage === 'review' && (
               <>
+                <Spot n={2} place="tl" title="The warning travels with the request" note="What Proofline saw on the call follows the payment to the approval screen, so the context isn't lost between apps.">
                 <p className="bank-flag">
                   <Badge kind="identity" status="cant" size="sm" />
                   <span>{t('wire.flag')}</span>
                 </p>
+                </Spot>
                 <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')} data-tour="wire-approve">
                   {t('wire.approve')}
                 </button>
@@ -81,11 +86,13 @@ export function Wire({ onDone }: { onDone: () => void }) {
                   <p>
                     <strong>{t('wire.wait.b')}</strong> {t('wire.wait.r')}
                   </p>
+                  <Spot n={3} place="tl" title="Silence is safe" note="If David doesn't answer, nothing moves. The default outcome of every failure is 'no money sent', never 'sent anyway'.">
                   <p className="bank-countdown">
                     {t('wire.countdown', { t: '\u0000' })
                       .split('\u0000')
                       .flatMap((part, i) => (i ? [<span key={i} className="countdown-num">{mmss}</span>, part] : [part]))}
                   </p>
+                  </Spot>
                   <button type="button" className="link-btn" onClick={() => setStage('timeout')}>
                     {t('wire.skip')}
                   </button>
