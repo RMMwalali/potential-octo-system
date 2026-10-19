@@ -114,7 +114,9 @@ export function Landing() {
       ScrollTrigger.create({
         trigger: '.scroll-call',
         start: 'top top',
-        end: '+=1800',
+        // Phones get half the scroll distance, so it doesn't take a long thumb-scroll to finish the call.
+        end: () => `+=${window.innerWidth < 640 ? 840 : window.innerWidth < 1000 ? 1300 : 1800}`,
+        invalidateOnRefresh: true,
         pin: '.scroll-call-pin',
         onUpdate: (st) => setStage(Math.min(3, Math.floor(st.progress * 4.4))),
       })
