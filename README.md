@@ -14,6 +14,14 @@ A finance officer at a Nairobi logistics firm joins a call with her "CFO", who a
 4. **The payment** – Amara presses approve. Proofline asks the real David on his own phone. He taps *No, I didn't ask for this*. Payment stopped.
 5. **Everywhere else** – the same badges on bot-free replies, a dating match, and verified-purchase reviews.
 
+## Built for judging
+
+- **Play the story**: one button runs all five steps on its own in under a minute, with captions, pause and skip. It presses the real buttons, so it doubles as the demo video.
+- **Designer's notes**: switch them on in the header to see numbered pins explaining the UX decision behind each part of every screen.
+- **Edge cases**: ask David from inside the call, a live answer countdown, a no-answer hold, cancelling a payment, and cancelling a lost phone.
+- **Fast first load**: the demo pages never download the 3D code; the landing page shows a still of the 3D scene at once and fades the live scene in. Phones get a lighter 3D scene.
+- **Smooth navigation**: steps slide in from the direction you're going; use the arrow keys, or swipe on a phone.
+
 ## Design decisions
 
 - **Two questions, kept apart.** "Is this a real person?" and "Is this the right person?" get different badges. The scammers in the real case were human, so a "not a bot" badge alone would have stayed green.
