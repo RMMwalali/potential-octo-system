@@ -1859,3 +1859,8 @@ body:has(.tour-bar) .demo-foot {
 .tour-progress i.now.is-paused {
   animation-play-state: paused;
 }
+
+.route-loading {
+  min-height: 100vh;
+  background: var(--paper);
+}

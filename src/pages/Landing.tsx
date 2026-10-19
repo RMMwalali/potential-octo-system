@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '../components/Badge'
 import { CallStage } from '../components/CallStage'
-import { Hero3D } from '../components/Hero3D'
 import { PlayStoryButton } from '../components/Tour'
 import { ArrowRight, HumanMark, ReceiptMark, ShieldMark } from '../components/icons'
 import { Wordmark } from '../components/Wordmark'
@@ -12,6 +11,55 @@ import './landing.css'
 gsap.registerPlugin(ScrollTrigger)
 
 const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const Hero3D = lazy(() => import('../components/Hero3D').then((m) => ({ default: m.Hero3D })))
+
+const INTRO_KEY = 'proofline-intro-seen'
+const introSeen = () => {
+  try {
+    return sessionStorage.getItem(INTRO_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+const markIntroSeen = () => {
+  try {
+    sessionStorage.setItem(INTRO_KEY, '1')
+  } catch {
+    /* storage blocked: the intro just plays again next time */
+  }
+}
+
+/** A still of the 3D scene shows at once; the live scene loads after the page is up and fades in over it. */
+function HeroStage() {
+  const [load3d, setLoad3d] = useState(false)
+  const [live, setLive] = useState(false)
+  const onReady = useCallback(() => setLive(true), [])
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setLoad3d(true), 400)
+    return () => window.clearTimeout(t)
+  }, [])
+
+  return (
+    <div className={`hero3d hero-stage ${live ? 'is-live' : ''}`}>
+      <img
+        className="hero-poster"
+        src="./hero-poster.webp"
+        width="996"
+        height="1053"
+        alt="A Proofline shield surrounded by four video-call tiles. Three say Identity confirmed. David's says Can't confirm."
+        decoding="async"
+        fetchPriority="high"
+      />
+      {load3d && (
+        <Suspense fallback={null}>
+          <Hero3D onReady={onReady} />
+        </Suspense>
+      )}
+    </div>
+  )
+}
 
 const callBeats = [
   { count: '0 of 3', line: 'Four faces join the payments call.' },
@@ -24,7 +72,7 @@ export function Landing() {
   const root = useRef<HTMLDivElement>(null)
   const [stage, setStage] = useState(0)
   const [peeled, setPeeled] = useState(false)
-  const [loading, setLoading] = useState(() => !reduce())
+  const [loading, setLoading] = useState(() => !reduce() && !introSeen())
 
   useEffect(() => {
     const el = root.current
@@ -35,12 +83,20 @@ export function Landing() {
     }
 
     const ctx = gsap.context(() => {
-      // 1. Preloader: the seal stamps down, then the sheet lifts away.
-      const intro = gsap.timeline({ onComplete: () => setLoading(false) })
+      // 1. Preloader (first visit only): the seal stamps down, then the sheet lifts away.
+      const intro = gsap.timeline({
+        onComplete: () => {
+          setLoading(false)
+          markIntroSeen()
+        },
+      })
+      if (el.querySelector('.loader')) {
+        intro
+          .from('.loader-seal', { scale: 2.4, rotation: -18, opacity: 0, duration: 0.55, ease: 'back.out(2.2)' })
+          .to('.loader-seal', { scale: 0.9, duration: 0.12, yoyo: true, repeat: 1, ease: 'power1.inOut' })
+          .to('.loader', { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, '+=0.15')
+      }
       intro
-        .from('.loader-seal', { scale: 2.4, rotation: -18, opacity: 0, duration: 0.55, ease: 'back.out(2.2)' })
-        .to('.loader-seal', { scale: 0.9, duration: 0.12, yoyo: true, repeat: 1, ease: 'power1.inOut' })
-        .to('.loader', { yPercent: -100, duration: 0.7, ease: 'power4.inOut' }, '+=0.15')
         .from('.hero-line > span', { yPercent: 110, rotation: 4, duration: 0.9, stagger: 0.08, ease: 'power4.out' }, '-=0.35')
         .from('.hero-sub, .hero-actions, .hero-story', { y: 24, opacity: 0, duration: 0.6, stagger: 0.08 }, '-=0.6')
         .from('.hero3d', { scale: 0.85, opacity: 0, duration: 1, ease: 'expo.out' }, '-=0.9')
@@ -186,7 +242,7 @@ export function Landing() {
               <PlayStoryButton className="btn btn-ghost btn-big" />
             </div>
           </div>
-          <Hero3D />
+          <HeroStage />
         </section>
 
         {/* ───────── Curved marquee ───────── */}

@@ -262,7 +262,7 @@ const tiles: TileSpec[] = [
   { id: 'amara', hair: 'long', pos: [2.2, -1.5, -0.6], rot: [-0.05, -0.3, -0.06] },
 ]
 
-export function Hero3D() {
+export function Hero3D({ onReady }: { onReady?: () => void }) {
   const wrap = useRef<HTMLDivElement>(null)
   const [flagged, setFlagged] = useState(false)
   const [webgl] = useState(hasWebGL)
@@ -271,6 +271,8 @@ export function Hero3D() {
     const host = wrap.current
     if (!host || !webgl) return
     let disposed = false
+    let ready = false
+    let announced = false
     const still = reduceMotion()
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -356,11 +358,18 @@ export function Hero3D() {
         if (disposed) return
         build()
         if (still) {
+          window.setTimeout(() => {
+            if (!announced) {
+              announced = true
+              onReady?.()
+            }
+          }, 50)
           const d = made.find((m) => m.spec.id === 'david')
           if (d) d.group.rotation.y = d.spec.rot[1] + Math.PI
           setFlagged(true)
           renderer.render(scene, camera)
         }
+        ready = true
       })
 
     // Size
@@ -372,7 +381,13 @@ export function Hero3D() {
       // Pull the camera back on narrow screens so all four tiles fit.
       camera.position.z = w / h < 0.9 ? 15 : w / h < 1.2 ? 12.5 : 11
       camera.updateProjectionMatrix()
-      if (still) renderer.render(scene, camera)
+      if (still) {
+        renderer.render(scene, camera)
+        if (ready && !announced) {
+          announced = true
+          onReady?.()
+        }
+      }
     }
     const ro = new ResizeObserver(resize)
     ro.observe(host)
@@ -454,6 +469,10 @@ export function Hero3D() {
       }
 
       renderer.render(scene, camera)
+      if (ready && !announced) {
+        announced = true
+        onReady?.()
+      }
     }
     loop()
 
@@ -468,20 +487,15 @@ export function Hero3D() {
       renderer.dispose()
       host.removeChild(renderer.domElement)
     }
-  }, [webgl])
+  }, [webgl, onReady])
 
   return (
-    <div className="hero3d" ref={wrap}>
+    <div className="hero3d-live" ref={wrap}>
       <p className="sr-only" aria-live="polite">
         {flagged
           ? 'Proofline confirms Wanjiru, Brian and Amara, but cannot confirm David. The call is not coming from his phone.'
           : 'Proofline is checking who is on the call.'}
       </p>
-      {!webgl && (
-        <div className="hero3d-fallback">
-          <span className="sticker sticker-orange">Can't confirm David</span>
-        </div>
-      )}
       <span className={`hand-note ${flagged ? 'is-on' : ''}`} aria-hidden="true">
         that's not David!
         <svg viewBox="0 0 80 50" width="80" height="50">

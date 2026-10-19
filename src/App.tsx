@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Demo } from './pages/Demo'
-import { Landing } from './pages/Landing'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { TourProvider } from './components/Tour'
+
+const loadDemo = () => import('./pages/Demo')
+const Demo = lazy(() => loadDemo().then((m) => ({ default: m.Demo })))
+const Landing = lazy(() => import('./pages/Landing').then((m) => ({ default: m.Landing })))
 
 type Route = { page: 'landing' } | { page: 'demo'; step: number }
 
@@ -26,12 +28,22 @@ export default function App() {
     return () => window.removeEventListener('hashchange', on)
   }, [route.page])
 
+  // Fetch the demo in the background once the landing page is idle,
+  // so "Try the demo" opens instantly.
+  useEffect(() => {
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }
+    const idle = (cb: () => void) => (w.requestIdleCallback ? w.requestIdleCallback(cb, { timeout: 3000 }) : setTimeout(cb, 1500))
+    idle(() => void loadDemo())
+  }, [])
+
   return (
     <TourProvider>
       <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus() }}>
         Skip to content
       </a>
-      {route.page === 'demo' ? <Demo step={route.step} /> : <Landing />}
+      <Suspense fallback={<div className="route-loading" aria-hidden="true" />}>
+        {route.page === 'demo' ? <Demo step={route.step} /> : <Landing />}
+      </Suspense>
     </TourProvider>
   )
 }
