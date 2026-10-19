@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '../components/Badge'
 import { CallStage } from '../components/CallStage'
 import { Hero3D } from '../components/Hero3D'
+import { PlayStoryButton } from '../components/Tour'
 import { ArrowRight, HumanMark, ReceiptMark, ShieldMark } from '../components/icons'
 import { Wordmark } from '../components/Wordmark'
 import './landing.css'
@@ -182,9 +183,7 @@ export function Landing() {
               <a href="#/demo/1" className="btn btn-primary btn-big">
                 Try the demo <ArrowRight />
               </a>
-              <a href="#privacy" className="btn btn-ghost btn-big">
-                How we protect your privacy
-              </a>
+              <PlayStoryButton className="btn btn-ghost btn-big" />
             </div>
           </div>
           <Hero3D />

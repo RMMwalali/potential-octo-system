@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { PlayStoryButton } from '../components/Tour'
 import { CallStage } from '../components/CallStage'
 import { ArrowLeft, ArrowRight } from '../components/icons'
 import { Wordmark } from '../components/Wordmark'
@@ -12,6 +13,14 @@ const steps = ['Verify once', 'Her wallet', 'The call', 'The payment', 'Everywhe
 export function Demo({ step }: { step: number }) {
   const go = (n: number) => (window.location.hash = `#/demo/${n}`)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const [run, setRun] = useState(0)
+
+  // A fresh story starts every step from its first state.
+  useEffect(() => {
+    const on = () => setRun((r) => r + 1)
+    window.addEventListener('tour-reset', on)
+    return () => window.removeEventListener('tour-reset', on)
+  }, [])
 
   // Move focus to the step title on each step change, so keyboard and
   // screen-reader users land at the top of the new content.
@@ -42,6 +51,7 @@ export function Demo({ step }: { step: number }) {
             })}
           </ol>
         </nav>
+        <PlayStoryButton className="btn btn-primary btn-small demo-play" />
       </header>
 
       <main id="main" className="demo-main" tabIndex={-1}>
@@ -54,6 +64,7 @@ export function Demo({ step }: { step: number }) {
             : 'Beyond the office, the same badges protect everyday life online.'}
         </p>
 
+        <div key={`${step}-${run}`} className="step-body">
         {step === 1 && <Verify onDone={() => go(2)} />}
         {step === 2 && <Wallet onDone={() => go(3)} />}
         {step === 3 && (
@@ -70,6 +81,7 @@ export function Demo({ step }: { step: number }) {
         )}
         {step === 4 && <Wire onDone={() => go(5)} />}
         {step === 5 && <Everywhere />}
+        </div>
       </main>
 
       <footer className="demo-foot">

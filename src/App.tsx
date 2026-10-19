@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Demo } from './pages/Demo'
 import { Landing } from './pages/Landing'
+import { TourProvider } from './components/Tour'
 
 type Route = { page: 'landing' } | { page: 'demo'; step: number }
 
@@ -26,11 +27,11 @@ export default function App() {
   }, [route.page])
 
   return (
-    <>
+    <TourProvider>
       <a className="skip" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById('main')?.focus() }}>
         Skip to content
       </a>
       {route.page === 'demo' ? <Demo step={route.step} /> : <Landing />}
-    </>
+    </TourProvider>
   )
 }

@@ -50,7 +50,7 @@ export function Wire({ onDone }: { onDone: () => void }) {
                   <Badge kind="identity" status="cant" size="sm" />
                   <span>The person who asked for this on the call wasn't confirmed as David.</span>
                 </p>
-                <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')}>
+                <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')} data-tour="wire-approve">
                   Approve payment
                 </button>
               </>
@@ -75,7 +75,7 @@ export function Wire({ onDone }: { onDone: () => void }) {
                   <strong>David says he didn't ask for this. No money has moved.</strong> {company}'s security team has
                   been alerted and the call has been flagged.
                 </p>
-                <button type="button" className="btn btn-primary" onClick={onDone}>
+                <button type="button" className="btn btn-primary" onClick={onDone} data-tour="wire-next">
                   See Proofline everywhere else
                 </button>
               </div>
@@ -103,7 +103,7 @@ export function Wire({ onDone }: { onDone: () => void }) {
                 <p className="confirm-app">Proofline</p>
                 <h3>Did you ask Amara to send {amount}?</h3>
                 <p className="confirm-detail">To {payee}, Hong Kong. Requested a minute ago on a Huddle call.</p>
-                <button type="button" className="btn btn-stop btn-block" onClick={() => setStage('stopped')}>
+                <button type="button" className="btn btn-stop btn-block" onClick={() => setStage('stopped')} data-tour="wire-no">
                   No, I didn't ask for this
                 </button>
                 <button type="button" className="btn btn-quiet btn-block" onClick={() => setStage('approved')}>

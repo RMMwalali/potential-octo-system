@@ -1713,3 +1713,149 @@ main:focus {
   text-transform: uppercase;
   color: var(--forest);
 }
+
+/* ───────── Story playback ───────── */
+.tour-bar {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 24px));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 16px;
+  align-items: center;
+  padding: 14px 16px 14px 20px;
+  border-radius: 22px;
+  background: var(--forest);
+  color: #fff;
+  border: 4px solid #fff;
+  box-shadow: 0 24px 50px -20px rgba(8, 25, 14, 0.7);
+  animation: tour-in 0.4s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+@keyframes tour-in {
+  from {
+    transform: translate(-50%, 30px);
+    opacity: 0;
+  }
+}
+
+.tour-progress {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 4px;
+}
+
+.tour-progress i {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.tour-progress i.done {
+  background: var(--lime);
+}
+
+.tour-progress i.now {
+  background: linear-gradient(90deg, var(--lime) 50%, rgba(255, 255, 255, 0.2) 50%);
+  background-size: 200% 100%;
+  animation: tour-fill 3s linear forwards;
+}
+
+@keyframes tour-fill {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.tour-caption {
+  display: grid;
+  gap: 2px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  min-width: 0;
+}
+
+.tour-step {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--lime);
+}
+
+.tour-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.tour-btn {
+  min-width: 42px;
+  height: 42px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tour-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.tour-btn:focus-visible {
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--forest), 0 0 0 6px var(--lime);
+}
+
+.tour-stop {
+  background: var(--lime);
+  color: var(--forest);
+}
+
+.tour-target {
+  position: relative;
+  z-index: 5;
+  animation: tour-ping 0.7s ease-out;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 9px var(--orange) !important;
+}
+
+@keyframes tour-ping {
+  0% {
+    box-shadow: 0 0 0 4px #fff, 0 0 0 30px rgba(255, 106, 19, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 4px #fff, 0 0 0 9px var(--orange);
+  }
+}
+
+.demo-play {
+  flex: none;
+}
+
+/* Leave room for the playback bar */
+body:has(.tour-bar) .demo-foot {
+  padding-bottom: 120px;
+}
+
+@media (max-width: 640px) {
+  .tour-bar {
+    grid-template-columns: 1fr;
+  }
+  .tour-caption {
+    font-size: 0.98rem;
+  }
+}
+
+.tour-progress i.now.is-paused {
+  animation-play-state: paused;
+}

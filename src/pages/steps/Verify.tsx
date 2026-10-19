@@ -53,7 +53,7 @@ export function Verify({ onDone }: { onDone: () => void }) {
               </div>
               <h3>Hold your national ID or passport inside the frame</h3>
               <PrivacyNote>Your ID is read on this phone. Proofline's servers never receive a copy.</PrivacyNote>
-              <button type="button" className="btn btn-primary btn-block" onClick={run} disabled={busy}>
+              <button type="button" className="btn btn-primary btn-block" onClick={run} disabled={busy} data-tour="verify-scan">
                 {busy ? 'Reading your ID…' : 'Scan ID'}
               </button>
               <button type="button" className="link-btn" aria-expanded={alt} onClick={() => setAlt((a) => !a)}>
@@ -79,7 +79,7 @@ export function Verify({ onDone }: { onDone: () => void }) {
               </div>
               <h3>Look at the camera and turn your head slowly</h3>
               <PrivacyNote>This checks you're a live person who matches the ID. The selfie is deleted right after.</PrivacyNote>
-              <button type="button" className="btn btn-primary btn-block" onClick={run} disabled={busy}>
+              <button type="button" className="btn btn-primary btn-block" onClick={run} disabled={busy} data-tour="verify-selfie">
                 {busy ? 'Checking it matches…' : 'Start selfie check'}
               </button>
             </div>
@@ -96,7 +96,7 @@ export function Verify({ onDone }: { onDone: () => void }) {
                 <Badge kind="identity" />
                 <Badge kind="human" />
               </div>
-              <button type="button" className="btn btn-primary btn-block" onClick={onDone}>
+              <button type="button" className="btn btn-primary btn-block" onClick={onDone} data-tour="verify-done">
                 Open my wallet
               </button>
             </div>

@@ -103,7 +103,7 @@ export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
           <HangUpIcon />
         </span>
         {mode === 'demo' && done && onContinue && (
-          <button type="button" className="btn btn-light call-continue" onClick={onContinue}>
+          <button type="button" className="btn btn-light call-continue" onClick={onContinue} data-tour="call-continue">
             David asks Amara to send the payment
           </button>
         )}

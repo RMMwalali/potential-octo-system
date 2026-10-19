@@ -71,7 +71,7 @@ export function Wallet({ onDone }: { onDone: () => void }) {
                 <span>Also share my employer</span>
               </label>
               <div className="request-actions">
-                <button type="button" className="btn btn-primary btn-block" onClick={share}>
+                <button type="button" className="btn btn-primary btn-block" onClick={share} data-tour="wallet-share">
                   Share with {callApp}
                 </button>
                 <button type="button" className="btn btn-quiet btn-block" onClick={() => setDecision('declined')}>
@@ -125,7 +125,7 @@ export function Wallet({ onDone }: { onDone: () => void }) {
           </ul>
 
           {decision !== 'pending' && (
-            <button type="button" className="btn btn-primary btn-block" onClick={onDone}>
+            <button type="button" className="btn btn-primary btn-block" onClick={onDone} data-tour="wallet-join">
               Join the call
             </button>
           )}
