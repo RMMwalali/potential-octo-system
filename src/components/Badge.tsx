@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { HumanMark, ReceiptMark, ShieldMark, StopMark } from './icons'
 
-export type BadgeKind = 'identity' | 'human' | 'purchase' | 'stopped'
+export type BadgeKind = 'identity' | 'human' | 'purchase' | 'stopped' | 'flagged'
 export type BadgeStatus = 'confirmed' | 'checking' | 'cant'
 
 type Props = {
@@ -18,6 +18,7 @@ type Props = {
 
 const label = (kind: BadgeKind, status: BadgeStatus) => {
   if (kind === 'stopped') return 'Payment stopped'
+  if (kind === 'flagged') return 'Flagged as fake'
   if (kind === 'purchase') return 'Verified purchase'
   if (kind === 'human') return 'Real person'
   if (status === 'checking') return 'Checking identity'
@@ -42,6 +43,10 @@ const explainers: Record<BadgeKind, { proves: string; doesnt: string }> = {
     proves: 'The person who must approve this payment said they did not ask for it.',
     doesnt: 'No money has moved.',
   },
+  flagged: {
+    proves: 'The real person, on their registered phone, said this is not them.',
+    doesnt: 'It does not reveal anything about the real person to the caller.',
+  },
 }
 
 export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md', reason }: Props) {
@@ -50,7 +55,7 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
   const wrapRef = useRef<HTMLSpanElement>(null)
   const text = label(kind, status)
   const tone =
-    kind === 'stopped' ? 'stop' : status === 'cant' ? 'warn' : status === 'checking' ? 'wait' : 'ok'
+    kind === 'stopped' || kind === 'flagged' ? 'stop' : status === 'cant' ? 'warn' : status === 'checking' ? 'wait' : 'ok'
 
   useEffect(() => {
     if (!open) return
