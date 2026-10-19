@@ -8,6 +8,18 @@ type Face = 'confirmed' | 'checking' | 'warning'
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+/** Phones, small screens, low core/memory counts and data-saver all get the lighter scene. */
+const lowPower = () => {
+  const n = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } }
+  return (
+    window.innerWidth < 760 ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    (n.hardwareConcurrency ?? 8) <= 4 ||
+    (n.deviceMemory ?? 8) <= 4 ||
+    !!n.connection?.saveData
+  )
+}
+
 const hasWebGL = () => {
   try {
     const c = document.createElement('canvas')
@@ -150,7 +162,7 @@ function pill(ctx: CanvasRenderingContext2D, text: string, x: number, y: number,
   ctx.fillText(text, x + 62, y + 42)
 }
 
-function tileTexture(p: Person, hair: Hair, face: Face): THREE.CanvasTexture {
+function tileTexture(p: Person, hair: Hair, face: Face, light = false): THREE.CanvasTexture {
   const c = document.createElement('canvas')
   c.width = TW
   c.height = TH
@@ -197,13 +209,13 @@ function tileTexture(p: Person, hair: Hair, face: Face): THREE.CanvasTexture {
 
   const t = new THREE.CanvasTexture(c)
   t.colorSpace = THREE.SRGBColorSpace
-  t.anisotropy = 8
+  t.anisotropy = light ? 2 : 8
   return t
 }
 
 /* ───────── The shield ───────── */
 
-function shieldMesh() {
+function shieldMesh(light: boolean) {
   const s = new THREE.Shape()
   // Same outline as the logo, in its 24-unit grid with y flipped.
   s.moveTo(12, -2.8)
@@ -218,8 +230,8 @@ function shieldMesh() {
     bevelEnabled: true,
     bevelThickness: 0.9,
     bevelSize: 0.7,
-    bevelSegments: 8,
-    curveSegments: 32,
+    bevelSegments: light ? 4 : 8,
+    curveSegments: light ? 18 : 32,
   })
   g.center()
   const m = new THREE.MeshPhysicalMaterial({
@@ -237,7 +249,7 @@ function shieldMesh() {
   const tick = new THREE.Group()
   const stroke = (ax: number, ay: number, bx: number, by: number) => {
     const len = Math.hypot(bx - ax, by - ay)
-    const cap = new THREE.Mesh(new THREE.CapsuleGeometry(0.11, len, 8, 16), tickMat)
+    const cap = new THREE.Mesh(new THREE.CapsuleGeometry(0.11, len, light ? 4 : 8, light ? 10 : 16), tickMat)
     cap.position.set((ax + bx) / 2, (ay + by) / 2, 0)
     cap.rotation.z = Math.atan2(by - ay, bx - ax) - Math.PI / 2
     tick.add(cap)
@@ -274,9 +286,10 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
     let ready = false
     let announced = false
     const still = reduceMotion()
+    const light = lowPower()
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    const renderer = new THREE.WebGLRenderer({ antialias: !light, alpha: true, powerPreference: light ? 'low-power' : 'high-performance' })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, light ? 1.5 : 2))
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.05
@@ -298,19 +311,19 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
     const root = new THREE.Group()
     scene.add(root)
 
-    const { group: shield, tickMat } = shieldMesh()
+    const { group: shield, tickMat } = shieldMesh(light)
     root.add(shield)
 
     // Scanning ring around the shield
     const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.05, 0.025, 12, 160),
+      new THREE.TorusGeometry(2.05, 0.025, light ? 6 : 12, light ? 90 : 160),
       new THREE.MeshBasicMaterial({ color: '#0a3a1b', transparent: true, opacity: 0.35 }),
     )
     ring.rotation.x = 1.2
     root.add(ring)
     const dots: THREE.Mesh[] = []
     for (let i = 0; i < 3; i++) {
-      const d = new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 16), new THREE.MeshBasicMaterial({ color: '#ff6a13' }))
+      const d = new THREE.Mesh(new THREE.SphereGeometry(0.075, light ? 8 : 16, light ? 8 : 16), new THREE.MeshBasicMaterial({ color: '#ff6a13' }))
       ring.add(d)
       dots.push(d)
     }
@@ -329,13 +342,13 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
         g.position.set(...spec.pos)
         g.rotation.set(...spec.rot)
         const slab = new THREE.Mesh(slabGeo, slabMat)
-        const frontTex = tileTexture(p, spec.hair, spec.id === 'david' ? 'checking' : 'confirmed')
+        const frontTex = tileTexture(p, spec.hair, spec.id === 'david' ? 'checking' : 'confirmed', light)
         textures.push(frontTex)
         const front = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ map: frontTex, transparent: true }))
         front.position.z = 0.051
         g.add(slab, front)
         if (spec.id === 'david') {
-          const backTex = tileTexture(p, spec.hair, 'warning')
+          const backTex = tileTexture(p, spec.hair, 'warning', light)
           textures.push(backTex)
           const back = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({ map: backTex, transparent: true }))
           back.position.z = -0.051
@@ -379,7 +392,7 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
       renderer.setSize(w, h, false)
       camera.aspect = w / h
       // Pull the camera back on narrow screens so all four tiles fit.
-      camera.position.z = w / h < 0.9 ? 15 : w / h < 1.2 ? 12.5 : 11
+      camera.position.z = w / h < 0.9 ? 13 : w / h < 1.2 ? 12.5 : 11
       camera.updateProjectionMatrix()
       if (still) {
         renderer.render(scene, camera)
@@ -427,14 +440,24 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting))
     io.observe(host)
 
+    // Background tab: stop the clock too, so the scene doesn't jump when you come back.
+    const onVis = () => (document.hidden ? clock.stop() : clock.start())
+    document.addEventListener('visibilitychange', onVis)
+
     let raf = 0
     let lastFlag = false
     const ease = (t: number) => 1 - Math.pow(1 - t, 3) + Math.sin(t * Math.PI) * 0.08 // a little overshoot
 
+    let frame = 0
+    let elapsed = 0
     const loop = () => {
       raf = requestAnimationFrame(loop)
-      if (!visible) return
-      const t = clock.getElapsedTime()
+      if (!visible || document.hidden) return
+      // Lighter devices draw every other frame (about 30 fps).
+      frame++
+      if (light && frame % 2) return
+      elapsed += Math.min(0.1, clock.getDelta())
+      const t = elapsed
 
       root.rotation.y += (target.x * 0.28 - root.rotation.y) * 0.05
       root.rotation.x += (target.y * 0.16 + scrollT * 0.5 - root.rotation.x) * 0.05
@@ -481,6 +504,7 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
       cancelAnimationFrame(raf)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('scroll', onScroll)
+      document.removeEventListener('visibilitychange', onVis)
       io.disconnect()
       ro.disconnect()
       textures.forEach((t) => t.dispose())

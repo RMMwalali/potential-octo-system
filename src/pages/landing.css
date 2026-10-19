@@ -872,7 +872,8 @@
     padding: 96px 16px var(--s7);
   }
   .hero3d {
-    height: 420px;
+    height: 380px;
+    margin-top: -12px;
   }
   .hand-note {
     display: none;
