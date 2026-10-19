@@ -71,7 +71,16 @@ const callBeats = [
 export function Landing() {
   const root = useRef<HTMLDivElement>(null)
   const [stage, setStage] = useState(0)
-  const [peeled, setPeeled] = useState(false)
+  const sealedRows = [
+    { label: 'ID number', value: '2846 1937', tilt: -3 },
+    { label: 'Date of birth', value: '14 March 1994', tilt: 2 },
+    { label: 'Home address', value: 'Kilimani, Nairobi', tilt: -1.5 },
+    { label: 'Selfie scan', value: 'Deleted after setup', tilt: 2.5 },
+  ]
+  const [peeledRows, setPeeledRows] = useState<Record<string, boolean>>({})
+  const peeled = sealedRows.every((r) => peeledRows[r.label])
+  const anyPeeled = sealedRows.some((r) => peeledRows[r.label])
+  const setAll = (v: boolean) => setPeeledRows(Object.fromEntries(sealedRows.map((r) => [r.label, v])))
   const [loading, setLoading] = useState(() => !reduce() && !introSeen())
 
   useEffect(() => {
@@ -401,11 +410,11 @@ export function Landing() {
                 This is everything Huddle gets when it checks Amara on a call. The rest stays taped up on her phone, and only
                 she can peel it back.
               </p>
-              <button type="button" className="btn btn-lime btn-big" aria-pressed={peeled} onClick={() => setPeeled((p) => !p)}>
-                {peeled ? 'Seal it back up' : 'Peel back the tape'}
+              <button type="button" className="btn btn-lime btn-big" aria-pressed={peeled} onClick={() => setAll(!anyPeeled)}>
+                {anyPeeled ? 'Seal it back up' : 'Peel back all the tape'}
               </button>
               <p className="privacy-hand" aria-hidden="true">
-                {peeled ? 'only Amara sees this view' : 'Huddle only ever gets the tape'}
+                {anyPeeled ? 'only Amara sees this view' : 'or grab a strip and pull it off →'}
               </p>
             </div>
 
@@ -429,10 +438,14 @@ export function Landing() {
                   <span>Device</span>
                   <strong>Her registered phone</strong>
                 </li>
-                <Sealed label="ID number" value="2846 1937" peeled={peeled} tilt={-3} />
-                <Sealed label="Date of birth" value="14 March 1994" peeled={peeled} tilt={2} />
-                <Sealed label="Home address" value="Kilimani, Nairobi" peeled={peeled} tilt={-1.5} />
-                <Sealed label="Selfie scan" value="Deleted after setup" peeled={peeled} tilt={2.5} />
+                {sealedRows.map((r) => (
+                  <Sealed
+                    key={r.label}
+                    {...r}
+                    peeled={!!peeledRows[r.label]}
+                    onPeel={() => setPeeledRows((p) => ({ ...p, [r.label]: true }))}
+                  />
+                ))}
               </ul>
             </div>
           </div>
@@ -470,15 +483,76 @@ export function Landing() {
   )
 }
 
-function Sealed({ label, value, peeled, tilt }: { label: string; value: string; peeled: boolean; tilt: number }) {
+/** A private detail under a strip of tape. Drag the strip off, or press it with the keyboard. */
+function Sealed({
+  label,
+  value,
+  peeled,
+  tilt,
+  onPeel,
+}: {
+  label: string
+  value: string
+  peeled: boolean
+  tilt: number
+  onPeel: () => void
+}) {
+  const [drag, setDrag] = useState(0)
+  const startX = useRef<number | null>(null)
+  const tape = useRef<HTMLButtonElement>(null)
+
+  const onDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (peeled) return
+    startX.current = e.clientX
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  const onMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (startX.current === null) return
+    setDrag(Math.max(0, e.clientX - startX.current))
+  }
+  const onUp = () => {
+    if (startX.current === null) return
+    const w = tape.current?.offsetWidth ?? 200
+    const moved = drag
+    startX.current = null
+    setDrag(0)
+    // A pull past a third of the strip peels it; a small wiggle counts as a press.
+    if (moved > w * 0.33 || moved < 4) onPeel()
+  }
+
+  const dragging = drag > 0
   return (
     <li className={`sealed ${peeled ? 'is-peeled' : ''}`}>
       <span>{label}</span>
       <strong aria-hidden={!peeled}>{value}</strong>
-      {!peeled && <span className="sr-only">Never shared with Huddle</span>}
-      <span className="tape" style={{ ['--tilt' as string]: `${tilt}deg` }} aria-hidden="true">
+      {!peeled && <span className="sr-only">Never shared with Huddle.</span>}
+      <button
+        type="button"
+        ref={tape}
+        className={`tape ${dragging ? 'is-dragging' : ''}`}
+        style={{
+          ['--tilt' as string]: `${tilt}deg`,
+          ...(dragging ? { transform: `rotate(${tilt - drag / 18}deg) translate(${drag}px, ${-drag / 6}px)` } : null),
+        }}
+        aria-label={`Peel the tape off ${label}. Only Amara can see what's under it.`}
+        tabIndex={peeled ? -1 : 0}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={() => {
+          startX.current = null
+          setDrag(0)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onPeel()
+          }
+        }}
+        onClick={(e) => e.preventDefault()}
+      >
         never shared
-      </span>
+      </button>
     </li>
   )
 }

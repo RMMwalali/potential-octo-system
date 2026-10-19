@@ -984,3 +984,36 @@
 .hero-stage.is-live .hero-poster {
   opacity: 0;
 }
+
+/* drag-to-peel */
+.tape {
+  border: 0;
+  padding: 0;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tape.is-dragging {
+  cursor: grabbing;
+  transition: none;
+  box-shadow: 0 14px 22px -10px rgba(8, 25, 14, 0.5);
+}
+
+.tape:hover:not(.is-dragging) {
+  transform: rotate(var(--tilt, 0deg)) translate(4px, -2px);
+}
+
+.tape:focus-visible {
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--forest);
+}
+
+.sealed.is-peeled .tape {
+  pointer-events: none;
+}
+
+.sealed:has(.tape.is-dragging) strong {
+  visibility: visible;
+}
