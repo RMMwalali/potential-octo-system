@@ -29,7 +29,7 @@ A finance officer at a Nairobi logistics firm joins a call with her "CFO", who a
 - Screen-reader labels on badges ("Identity confirmed for Wanjiru Kamau") and live regions for status changes
 - Respects reduced-motion settings
 - Responsive down to 360px phones
-- An onboarding path for people without an ID to hand (colleague vouching)
+- An in-person path for people without an ID to hand. There is deliberately no vouching by other accounts: if one fake account got verified, it could vouch for the next.
 
 ## Run it
 

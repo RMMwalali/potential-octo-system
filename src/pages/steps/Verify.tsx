@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Phone } from '../../components/Phone'
-import { FaceScanIcon, IdCardIcon, LockIcon, UsersIcon, WalletIcon } from '../../components/icons'
+import { FaceScanIcon, IdCardIcon, LockIcon, WalletIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
 
 const stages = ['Scan your ID', 'Take a quick selfie', 'Saved to your wallet'] as const
@@ -60,10 +60,14 @@ export function Verify({ onDone }: { onDone: () => void }) {
                 I don't have an ID with me
               </button>
               {alt && (
-                <p className="alt-path">
-                  <UsersIcon size={16} /> Ask two colleagues who are already verified to vouch for you. You can add
-                  your ID later.
-                </p>
+                <div className="alt-path">
+                  <IdCardIcon size={16} />
+                  <p>
+                    <strong>Verify in person instead.</strong> Visit your company's security desk, where a trained staff
+                    member checks your ID face to face and links Proofline to this phone. Until then, you'll show as
+                    "Can't confirm identity".
+                  </p>
+                </div>
               )}
             </div>
           )}
