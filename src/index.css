@@ -2027,3 +2027,63 @@ body:has(.tour-bar) .demo-foot {
   flex-wrap: wrap;
   gap: 8px;
 }
+
+/* ───────── Step transitions ───────── */
+.step-body.enter-fwd {
+  animation: step-fwd 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+.step-body.enter-back {
+  animation: step-back 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes step-fwd {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+}
+
+@keyframes step-back {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+}
+
+.stepper-num {
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.is-current .stepper-num {
+  transform: scale(1.08);
+}
+
+.demo-keys kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  border-radius: 6px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font: 600 0.78rem var(--font-body);
+}
+
+@media (hover: none) {
+  .demo-keys {
+    display: none;
+  }
+}
+
+.demo-main {
+  overflow-x: clip;
+}
+
+.demo-keys {
+  margin-left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
