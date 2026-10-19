@@ -7,10 +7,12 @@ import { PlayStoryButton } from '../components/Tour'
 import { ArrowRight, HumanMark, ReceiptMark, ShieldMark } from '../components/icons'
 import { Wordmark } from '../components/Wordmark'
 import './landing.css'
+import { isStill, useStill } from '../a11y'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const reduce = isStill
 
 const Hero3D = lazy(() => import('../components/Hero3D').then((m) => ({ default: m.Hero3D })))
 
@@ -35,6 +37,7 @@ function HeroStage() {
   const [load3d, setLoad3d] = useState(false)
   const [live, setLive] = useState(false)
   const onReady = useCallback(() => setLive(true), [])
+  const still = useStill()
 
   useEffect(() => {
     const t = window.setTimeout(() => setLoad3d(true), 400)
@@ -54,7 +57,7 @@ function HeroStage() {
       />
       {load3d && (
         <Suspense fallback={null}>
-          <Hero3D onReady={onReady} />
+          <Hero3D key={still ? 'still' : 'moving'} onReady={onReady} />
         </Suspense>
       )}
     </div>
@@ -82,12 +85,14 @@ export function Landing() {
   const anyPeeled = sealedRows.some((r) => peeledRows[r.label])
   const setAll = (v: boolean) => setPeeledRows(Object.fromEntries(sealedRows.map((r) => [r.label, v])))
   const [loading, setLoading] = useState(() => !reduce() && !introSeen())
+  const still = useStill()
 
   useEffect(() => {
     const el = root.current
     if (!el) return
-    if (reduce()) {
+    if (still) {
       setStage(3)
+      setLoading(false)
       return
     }
 
@@ -195,7 +200,7 @@ export function Landing() {
     }, el)
 
     return () => ctx.revert()
-  }, [])
+  }, [still])
 
   const wave = 'FACES CAN BE FAKED ✦ VOICES CAN BE CLONED ✦ PROOF CAN’T ✦ '
   const wave2 = 'VERIFY ONCE ✦ PROVE ANYWHERE ✦ KEEP YOUR ID ✦ '

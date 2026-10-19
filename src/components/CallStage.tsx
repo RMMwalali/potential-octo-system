@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { callApp, people } from '../data'
+import { isStill } from '../a11y'
 import { Badge } from './Badge'
 import { CameraIcon, HangUpIcon, MicOffIcon, PhoneIcon, UsersIcon } from './icons'
 import { Portrait } from './Portrait'
@@ -15,8 +16,7 @@ type Props = {
   onContinue?: () => void
 }
 
-const reduceMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const reduceMotion = isStill
 
 export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
   const [auto, setAuto] = useState(reduceMotion() ? 3 : 0)

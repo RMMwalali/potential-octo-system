@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { people, type Person } from '../data'
+import { isStill } from '../a11y'
 
 type Hair = 'short' | 'long' | 'bald'
 type Face = 'confirmed' | 'checking' | 'warning'
 
-const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const reduceMotion = isStill
 
 /** Phones, small screens, low core/memory counts and data-saver all get the lighter scene. */
 const lowPower = () => {

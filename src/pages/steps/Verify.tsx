@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { isStill } from '../../a11y'
 import { Phone } from '../../components/Phone'
 import { FaceScanIcon, IdCardIcon, LockIcon, WalletIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
@@ -12,7 +13,7 @@ export function Verify({ onDone }: { onDone: () => void }) {
 
   const run = () => {
     setBusy(true)
-    const ms = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 200 : 1400
+    const ms = isStill() ? 200 : 1400
     setTimeout(() => {
       setBusy(false)
       setStage((s) => s + 1)

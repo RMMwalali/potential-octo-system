@@ -2087,3 +2087,144 @@ body:has(.tour-bar) .demo-foot {
   align-items: center;
   gap: 4px;
 }
+
+/* ───────── Display settings panel ───────── */
+.a11y {
+  position: fixed;
+  z-index: 58;
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.a11y-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  border: 3px solid #fff;
+  background: var(--forest);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -12px rgba(8, 25, 14, 0.7);
+}
+
+.a11y-btn:hover {
+  background: var(--forest-2);
+}
+
+.a11y-btn:focus-visible {
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--forest), 0 0 0 6px var(--lime);
+}
+
+.a11y-panel {
+  width: min(340px, calc(100vw - 32px));
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 3px solid var(--forest);
+  box-shadow: 0 24px 50px -20px rgba(8, 25, 14, 0.6);
+  animation: phone-in 0.3s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.a11y-title {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.a11y-row {
+  align-items: flex-start;
+}
+
+.a11y-text {
+  display: grid;
+  gap: 2px;
+}
+
+.a11y-hint {
+  font-size: 0.85rem;
+  font-weight: 450;
+  color: var(--ink-2);
+}
+
+/* During the story playback the bar sits at the bottom: tuck the button in. */
+@media (max-width: 640px) {
+  .a11y-btn-label {
+    display: none;
+  }
+  .a11y-btn {
+    width: 50px;
+    padding: 0;
+    justify-content: center;
+  }
+  .a11y.is-tour {
+    display: none;
+  }
+}
+
+/* Bigger text */
+html.a11y-large-text {
+  font-size: 115%;
+}
+
+/* High contrast */
+html.a11y-contrast {
+  --paper: #ffffff;
+  --surface: #ffffff;
+  --ink: #000000;
+  --ink-2: #1c1c1c;
+  --line: #4a4a4a;
+  --forest: #00260f;
+  --ok-ink: #00260f;
+  --ok-line: #00260f;
+  --warn-ink: #4a1a00;
+  --warn-line: #b84400;
+  --stop-ink: #6b0b04;
+  --stop-line: #6b0b04;
+  --wait-ink: #000000;
+  --call-ink-2: #e6efe6;
+}
+
+html.a11y-contrast .band-lime::before,
+html.a11y-contrast .band-forest::before,
+html.a11y-contrast .cta-block::before {
+  display: none;
+}
+
+html.a11y-contrast .badge,
+html.a11y-contrast .btn-quiet,
+html.a11y-contrast .proof-card {
+  border-width: 2.5px;
+}
+
+html.a11y-contrast .bigword-outline {
+  -webkit-text-stroke-width: 3px;
+}
+
+html.a11y-contrast a:not(.btn) {
+  text-decoration-thickness: 2px;
+}
+
+/* Motion off: same as the device setting */
+html.a11y-still *,
+html.a11y-still *::before,
+html.a11y-still *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-still .wave-straight-track {
+  animation: none !important;
+}
