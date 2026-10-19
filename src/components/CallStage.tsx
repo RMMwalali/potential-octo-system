@@ -4,34 +4,32 @@ import { Badge } from './Badge'
 import { CameraIcon, HangUpIcon, MicOffIcon, UsersIcon } from './icons'
 import { Portrait } from './Portrait'
 
-type Phase = 'checking' | 'resolved'
-
+/**
+ * Stage 0: everyone being checked. 1: Wanjiru confirmed. 2: Brian confirmed.
+ * 3: "David" can't be confirmed and the trust bar warns.
+ */
 type Props = {
-  /** Hero mode loops on its own; demo mode waits for the person. */
-  mode: 'hero' | 'demo'
+  /** demo: plays through on its own; scroll: the parent drives `stage`. */
+  mode: 'demo' | 'scroll'
+  stage?: number
   onContinue?: () => void
 }
 
 const reduceMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export function CallStage({ mode, onContinue }: Props) {
-  const [phase, setPhase] = useState<Phase>(mode === 'hero' && reduceMotion() ? 'resolved' : 'checking')
+export function CallStage({ mode, stage: driven = 0, onContinue }: Props) {
+  const [auto, setAuto] = useState(reduceMotion() ? 3 : 0)
   const [advice, setAdvice] = useState(false)
 
   useEffect(() => {
-    if (mode === 'hero' && reduceMotion()) return
-    if (phase === 'checking') {
-      const t = setTimeout(() => setPhase('resolved'), mode === 'hero' ? 2600 : 3200)
-      return () => clearTimeout(t)
-    }
-    if (mode === 'hero') {
-      const t = setTimeout(() => setPhase('checking'), 7000)
-      return () => clearTimeout(t)
-    }
-  }, [phase, mode])
+    if (mode !== 'demo' || auto >= 3) return
+    const t = setTimeout(() => setAuto((s) => s + 1), auto === 0 ? 1600 : 900)
+    return () => clearTimeout(t)
+  }, [mode, auto])
 
-  const done = phase === 'resolved'
+  const stage = mode === 'demo' ? auto : driven
+  const done = stage >= 3
 
   return (
     <section className={`call call-${mode}`} aria-label={`${callApp} video call, with Proofline checking who is on it`}>
@@ -43,28 +41,38 @@ export function CallStage({ mode, onContinue }: Props) {
       </header>
 
       <div className="call-grid">
-        <Tile personId="david" hair="bald" speaking status={done ? 'cant' : 'checking'} flagged={done}
-          reason={done ? "Not on David's registered phone" : undefined} />
-        <Tile personId="wanjiru" hair="long" status={done ? 'confirmed' : 'checking'} />
-        <Tile personId="brian" hair="short" status={done ? 'confirmed' : 'checking'} />
+        <Tile
+          personId="david"
+          hair="bald"
+          speaking
+          status={done ? 'cant' : 'checking'}
+          flagged={done}
+          reason={done ? "Not on David's registered phone" : undefined}
+        />
+        <Tile personId="wanjiru" hair="long" status={stage >= 1 ? 'confirmed' : 'checking'} justConfirmed={stage >= 1} />
+        <Tile personId="brian" hair="short" status={stage >= 2 ? 'confirmed' : 'checking'} justConfirmed={stage >= 2} />
         <Tile personId="amara" hair="long" self status="confirmed" />
       </div>
 
-      <p className="call-caption" aria-live="off">
+      <p className="call-caption">
         <span className="caption-who">David</span> Amara, I need the Meridian transfer out before three. Keep it between us
         for now.
       </p>
 
       <div className={`trust-bar ${done ? 'is-warn' : ''}`} aria-live="polite">
-        <span className="trust-mark" aria-hidden="true">P</span>
+        <span className="trust-mark" aria-hidden="true">
+          P
+        </span>
         {!done ? (
-          <span className="trust-text">Proofline is checking who's on this call…</span>
+          <span className="trust-text">
+            Proofline is checking who's on this call… {stage > 0 && `${stage} of 3 confirmed`}
+          </span>
         ) : (
           <span className="trust-text">
             <strong>We can't confirm that this is David Otieno.</strong> The other two are confirmed.
           </span>
         )}
-        {done && (
+        {done && mode === 'demo' && (
           <button type="button" className="trust-action" aria-expanded={advice} onClick={() => setAdvice((a) => !a)}>
             {advice ? 'Hide advice' : 'What should I do?'}
           </button>
@@ -84,7 +92,7 @@ export function CallStage({ mode, onContinue }: Props) {
         </div>
       )}
 
-      <footer className="call-controls" aria-hidden={mode === 'hero'}>
+      <footer className="call-controls" aria-hidden={mode === 'scroll'}>
         <span className="ctrl">
           <MicOffIcon />
         </span>
@@ -112,6 +120,7 @@ function Tile({
   self,
   flagged,
   reason,
+  justConfirmed,
 }: {
   personId: keyof typeof people
   hair: 'short' | 'long' | 'bald'
@@ -120,11 +129,15 @@ function Tile({
   self?: boolean
   flagged?: boolean
   reason?: string
+  justConfirmed?: boolean
 }) {
   const p = people[personId]
   return (
-    <figure className={`tile ${speaking ? 'is-speaking' : ''} ${flagged ? 'is-flagged' : ''}`}>
+    <figure
+      className={`tile ${speaking ? 'is-speaking' : ''} ${flagged ? 'is-flagged' : ''} ${justConfirmed ? 'is-confirmed' : ''}`}
+    >
       <Portrait person={p} hair={hair} />
+      {flagged && <span className="tile-scan" aria-hidden="true" />}
       <span className="tile-badge">
         <Badge kind="identity" status={status} subject={self ? `you, ${p.name}` : p.name} size="sm" reason={reason} />
       </span>
