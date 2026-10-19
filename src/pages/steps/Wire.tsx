@@ -3,6 +3,7 @@ import { Badge } from '../../components/Badge'
 import { Phone } from '../../components/Phone'
 import { PhoneIcon } from '../../components/icons'
 import { amount, company, payee } from '../../data'
+import { useT } from '../../i18n'
 
 type Stage = 'review' | 'waiting' | 'stopped' | 'approved' | 'timeout' | 'cancelled'
 
@@ -25,39 +26,37 @@ export function Wire({ onDone }: { onDone: () => void }) {
   }, [left, stage])
 
   const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`
+  const { t } = useT()
 
   return (
     <div className="wire">
       <div className="step-copy step-copy-wide">
-        <h2>The payment needs the real David</h2>
-        <p>
-          The fake David pushes Amara to send the money now. When she presses approve, Proofline asks the real David on
-          his registered phone. A copied face can't answer that.
-        </p>
+        <h2>{t('wire.h')}</h2>
+        <p>{t('wire.p')}</p>
       </div>
 
       <div className="wire-stage">
-        <section className="bank" aria-label={`${company} payments`} aria-live="polite">
+        <section className="bank" aria-label={t('wire.bank', { company })} aria-live="polite">
           <header className="bank-top">
-            <span className="bank-name">{company} payments</span>
-            <span className="bank-user">Signed in as Amara Njoroge</span>
+            <span className="bank-name">{t('wire.bank', { company })}</span>
+            <span className="bank-user">{t('wire.signedIn')}</span>
           </header>
 
           <div className="bank-body">
-            <p className="bank-kicker">Outgoing transfer</p>
+            <p className="bank-kicker">{t('wire.kicker')}</p>
             <p className="bank-amount">{amount}</p>
             <dl className="bank-facts">
               <div>
-                <dt>To</dt>
+                <dt>{t('wire.to')}</dt>
                 <dd>{payee}, Hong Kong</dd>
               </div>
               <div>
-                <dt>Requested by</dt>
-                <dd>David Otieno, on a {`Huddle`} call</dd>
+                <dt>{t('wire.by')}</dt>
+                <dd>{t('wire.byValue')}</dd>
               </div>
               <div>
-                <dt>Needs approval from</dt>
-                <dd>David Otieno, Chief financial officer</dd>
+                <dt>{t('wire.needs')}</dt>
+                <dd>{t('wire.needsValue')}</dd>
               </div>
             </dl>
 
@@ -65,10 +64,10 @@ export function Wire({ onDone }: { onDone: () => void }) {
               <>
                 <p className="bank-flag">
                   <Badge kind="identity" status="cant" size="sm" />
-                  <span>The person who asked for this on the call wasn't confirmed as David.</span>
+                  <span>{t('wire.flag')}</span>
                 </p>
                 <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')} data-tour="wire-approve">
-                  Approve payment
+                  {t('wire.approve')}
                 </button>
               </>
             )}
@@ -80,14 +79,15 @@ export function Wire({ onDone }: { onDone: () => void }) {
                 </span>
                 <div className="bank-wait-text">
                   <p>
-                    <strong>Waiting for David to confirm on his own phone.</strong> Proofline sent the request to the
-                    phone he registered, not to anyone on the call.
+                    <strong>{t('wire.wait.b')}</strong> {t('wire.wait.r')}
                   </p>
                   <p className="bank-countdown">
-                    <span className="countdown-num">{mmss}</span> left to answer. The payment stays on hold until then.
+                    {t('wire.countdown', { t: '\u0000' })
+                      .split('\u0000')
+                      .flatMap((part, i) => (i ? [<span key={i} className="countdown-num">{mmss}</span>, part] : [part]))}
                   </p>
                   <button type="button" className="link-btn" onClick={() => setStage('timeout')}>
-                    Demo: skip ahead 5 minutes
+                    {t('wire.skip')}
                   </button>
                 </div>
               </div>
@@ -95,17 +95,16 @@ export function Wire({ onDone }: { onDone: () => void }) {
 
             {stage === 'timeout' && (
               <div className="bank-result is-hold">
-                <Badge kind="identity" status="cant" size="lg" reason="No answer from David" />
+                <Badge kind="identity" status="cant" size="lg" reason={t('reason.noAnswer')} />
                 <p>
-                  <strong>David didn't answer, so nothing has moved.</strong> A payment this size never goes out without
-                  him. It stays on hold, and Amara can ask again or cancel it.
+                  <strong>{t('wire.timeout.b')}</strong> {t('wire.timeout.r')}
                 </p>
                 <div className="bank-actions">
                   <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')}>
-                    Ask David again
+                    {t('wire.askAgain')}
                   </button>
                   <button type="button" className="btn btn-quiet" onClick={() => setStage('cancelled')}>
-                    Cancel payment
+                    {t('wire.cancel')}
                   </button>
                 </div>
               </div>
@@ -114,15 +113,14 @@ export function Wire({ onDone }: { onDone: () => void }) {
             {stage === 'cancelled' && (
               <div className="bank-result">
                 <p>
-                  <strong>Payment cancelled.</strong> No money moved. The request and the call are saved for{' '}
-                  {company}'s security team.
+                  <strong>{t('wire.cancelled.b')}</strong> {t('wire.cancelled.r', { company })}
                 </p>
                 <div className="bank-actions">
                   <button type="button" className="btn btn-quiet" onClick={() => setStage('review')}>
-                    Start over
+                    {t('wire.startOver')}
                   </button>
                   <button type="button" className="btn btn-primary" onClick={onDone}>
-                    See Proofline everywhere else
+                    {t('wire.next')}
                   </button>
                 </div>
               </div>
@@ -132,11 +130,10 @@ export function Wire({ onDone }: { onDone: () => void }) {
               <div className="bank-result is-stop">
                 <Badge kind="stopped" size="lg" />
                 <p>
-                  <strong>David says he didn't ask for this. No money has moved.</strong> {company}'s security team has
-                  been alerted and the call has been flagged.
+                  <strong>{t('wire.stopped.b')}</strong> {t('wire.stopped.r', { company })}
                 </p>
                 <button type="button" className="btn btn-primary" onClick={onDone} data-tour="wire-next">
-                  See Proofline everywhere else
+                  {t('wire.next')}
                 </button>
               </div>
             )}
@@ -145,11 +142,10 @@ export function Wire({ onDone }: { onDone: () => void }) {
               <div className="bank-result is-ok">
                 <Badge kind="identity" />
                 <p>
-                  <strong>David confirmed on his phone.</strong> In the real story, this is the step that never happens,
-                  because the real David never asked.
+                  <strong>{t('wire.approved.b')}</strong> {t('wire.approved.r')}
                 </p>
                 <button type="button" className="link-btn" onClick={() => setStage('review')}>
-                  Try again
+                  {t('wire.tryAgain')}
                 </button>
               </div>
             )}
@@ -157,18 +153,18 @@ export function Wire({ onDone }: { onDone: () => void }) {
         </section>
 
         <div className={`david-phone ${stage === 'waiting' ? 'is-ringing' : ''}`}>
-          <Phone label="David's real phone" owner="The real David's phone, in a meeting across town">
+          <Phone label={t('wire.phone.label')} owner={t('call.phone.who')}>
             {stage === 'waiting' ? (
               <div className="confirm">
                 <p className="confirm-app">Proofline</p>
-                <h3>Did you ask Amara to send {amount}?</h3>
-                <p className="confirm-detail">To {payee}, Hong Kong. Requested a minute ago on a Huddle call.</p>
-                <p className="confirm-timer">Expires in {mmss}</p>
+                <h3>{t('wire.phone.q', { amount })}</h3>
+                <p className="confirm-detail">{t('wire.phone.detail', { payee })}</p>
+                <p className="confirm-timer">{t('wire.phone.expires', { t: mmss })}</p>
                 <button type="button" className="btn btn-stop btn-block" onClick={() => setStage('stopped')} data-tour="wire-no">
-                  No, I didn't ask for this
+                  {t('wire.phone.no')}
                 </button>
                 <button type="button" className="btn btn-quiet btn-block" onClick={() => setStage('approved')}>
-                  Yes, I asked
+                  {t('wire.phone.yes')}
                 </button>
               </div>
             ) : (
@@ -176,10 +172,10 @@ export function Wire({ onDone }: { onDone: () => void }) {
                 <p className="confirm-time">9:41</p>
                 <p className="confirm-idle-text">
                   {stage === 'stopped'
-                    ? 'You stopped a payment request. Thanks, David.'
+                    ? t('wire.idle.stopped')
                     : stage === 'timeout'
-                      ? 'Missed: 1 payment request from Proofline'
-                      : 'No requests'}
+                      ? t('wire.idle.timeout')
+                      : t('wire.idle.none')}
                 </p>
               </div>
             )}

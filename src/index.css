@@ -2228,3 +2228,50 @@ html.a11y-still *::after {
 html.a11y-still .wave-straight-track {
   animation: none !important;
 }
+
+/* ───────── Language switch ───────── */
+.lang-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  border: 2px solid var(--forest);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.lang-toggle button {
+  min-width: 40px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--forest);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.lang-toggle button[aria-pressed='true'] {
+  background: var(--forest);
+  color: var(--lime);
+}
+
+.lang-toggle button:focus-visible {
+  border-radius: 999px;
+}
+
+.demo-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+@media (max-width: 640px) {
+  .landing .site-nav nav {
+    gap: 8px;
+  }
+  .demo-tools {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useT } from '../i18n'
 
 /**
  * "Play the story": walks the five demo steps on its own, pressing the real
@@ -187,13 +188,14 @@ function TourBar() {
 
 export function PlayStoryButton({ className = 'btn btn-ghost' }: { className?: string }) {
   const { start, playing } = useTour()
+  const { t } = useT()
   if (playing) return null
   return (
     <button type="button" className={className} onClick={start}>
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
         <path d="M7 5v14l12-7z" fill="currentColor" />
       </svg>
-      Play the {tourSeconds}-second story
+      {t('tour.play', { n: tourSeconds })}
     </button>
   )
 }

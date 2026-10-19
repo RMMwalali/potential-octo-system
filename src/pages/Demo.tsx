@@ -7,12 +7,15 @@ import { Everywhere } from './steps/Everywhere'
 import { Verify } from './steps/Verify'
 import { Wallet } from './steps/Wallet'
 import { Wire } from './steps/Wire'
+import { LangToggle, useT, type Key } from '../i18n'
 
-const steps = ['Verify once', 'Her wallet', 'The call', 'The payment', 'Everywhere else']
+const stepKeys: Key[] = ['demo.s1', 'demo.s2', 'demo.s3', 'demo.s4', 'demo.s5']
 
 export function Demo({ step }: { step: number }) {
   const go = (n: number) => (window.location.hash = `#/demo/${n}`)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const { t } = useT()
+  const steps = stepKeys.map((k) => t(k))
   const [run, setRun] = useState(0)
   const prev = useRef(step)
   const dir = step >= prev.current ? 'fwd' : 'back'
@@ -87,17 +90,18 @@ export function Demo({ step }: { step: number }) {
             })}
           </ol>
         </nav>
-        <PlayStoryButton className="btn btn-primary btn-small demo-play" />
+        <div className="demo-tools">
+          <LangToggle />
+          <PlayStoryButton className="btn btn-primary btn-small demo-play" />
+        </div>
       </header>
 
       <main id="main" className="demo-main" tabIndex={-1} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <h1 className="sr-only" tabIndex={-1} ref={headingRef}>
-          Step {step} of {steps.length}: {steps[step - 1]}
+          {t('demo.stepOf', { n: step, total: steps.length })}: {steps[step - 1]}
         </h1>
         <p className="demo-persona">
-          {step <= 4
-            ? 'Amara Njoroge is a finance officer at Kilima Freight in Nairobi.'
-            : 'Beyond the office, the same badges protect everyday life online.'}
+          {step <= 4 ? t('demo.persona') : t('demo.persona5')}
         </p>
 
         <div key={`${step}-${run}`} className={`step-body enter-${dir}`}>
@@ -106,11 +110,8 @@ export function Demo({ step }: { step: number }) {
         {step === 3 && (
           <div className="call-step">
             <div className="step-copy step-copy-wide">
-              <h2>The CFO looks and sounds exactly like David</h2>
-              <p>
-                It isn't him. Proofline confirms the two colleagues on their own phones, and can't confirm "David",
-                because the call is coming from a device David never registered.
-              </p>
+              <h2>{t('demo.call.h')}</h2>
+              <p>{t('demo.call.p')}</p>
             </div>
             <CallStage mode="demo" onContinue={() => go(4)} />
           </div>
@@ -127,13 +128,17 @@ export function Demo({ step }: { step: number }) {
           </button>
         ) : (
           <a className="btn btn-quiet" href="#/">
-            <ArrowLeft /> Overview
+            <ArrowLeft /> {t('demo.overview')}
           </a>
         )}
         <span className="demo-count">
-          Step {step} of {steps.length}
+          {t('demo.stepOf', { n: step, total: steps.length })}
           <span className="demo-keys" aria-hidden="true">
-            Use <kbd>←</kbd> <kbd>→</kbd> to move
+            {t('demo.keys', { l: '\u0001', r: '\u0002' })
+              .split(/([\u0001\u0002])/)
+              .map((part, i) =>
+                part === '\u0001' ? <kbd key={i}>←</kbd> : part === '\u0002' ? <kbd key={i}>→</kbd> : part,
+              )}
           </span>
         </span>
         {step < steps.length ? (

@@ -29,6 +29,8 @@ A finance officer at a Nairobi logistics firm joins a call with her "CFO", who a
 - Screen-reader labels on badges ("Identity confirmed for Wanjiru Kamau") and live regions for status changes
 - Respects reduced-motion settings
 - Responsive down to 360px phones
+- English and Kiswahili on the key screens (hero, the call, badges, the payment step, demo navigation), with the page language set for screen readers. The Swahili should be reviewed by a native speaker before any real launch.
+- Display settings panel: bigger text, high contrast and motion off, remembered per visitor
 - An in-person path for people without an ID to hand. There is deliberately no vouching by other accounts: if one fake account got verified, it could vouch for the next.
 
 ## Run it

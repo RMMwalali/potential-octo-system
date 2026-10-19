@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { useT, type Key } from '../i18n'
 import { HumanMark, ReceiptMark, ShieldMark, StopMark } from './icons'
 
 export type BadgeKind = 'identity' | 'human' | 'purchase' | 'stopped' | 'flagged'
@@ -16,44 +17,22 @@ type Props = {
   reason?: string
 }
 
-const label = (kind: BadgeKind, status: BadgeStatus) => {
-  if (kind === 'stopped') return 'Payment stopped'
-  if (kind === 'flagged') return 'Flagged as fake'
-  if (kind === 'purchase') return 'Verified purchase'
-  if (kind === 'human') return 'Real person'
-  if (status === 'checking') return 'Checking identity'
-  if (status === 'cant') return "Can't confirm identity"
-  return 'Identity confirmed'
-}
-
-const explainers: Record<BadgeKind, { proves: string; doesnt: string }> = {
-  identity: {
-    proves: 'This is the named person, on the phone they registered when they verified.',
-    doesnt: 'It never shows their ID document, address or date of birth.',
-  },
-  human: {
-    proves: 'A real, unique person made this account. It is not a bot or a duplicate.',
-    doesnt: 'It does not say who they are. Their name stays private unless they share it.',
-  },
-  purchase: {
-    proves: 'The person who wrote this paid for the item from this seller.',
-    doesnt: 'It does not reveal what else they bought or how they paid.',
-  },
-  stopped: {
-    proves: 'The person who must approve this payment said they did not ask for it.',
-    doesnt: 'No money has moved.',
-  },
-  flagged: {
-    proves: 'The real person, on their registered phone, said this is not them.',
-    doesnt: 'It does not reveal anything about the real person to the caller.',
-  },
+const labelKey = (kind: BadgeKind, status: BadgeStatus): Key => {
+  if (kind === 'stopped') return 'badge.stopped'
+  if (kind === 'flagged') return 'badge.flagged'
+  if (kind === 'purchase') return 'badge.purchase'
+  if (kind === 'human') return 'badge.human'
+  if (status === 'checking') return 'badge.checking'
+  if (status === 'cant') return 'badge.cant'
+  return 'badge.identity'
 }
 
 export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md', reason }: Props) {
   const [open, setOpen] = useState(false)
   const popId = useId()
   const wrapRef = useRef<HTMLSpanElement>(null)
-  const text = label(kind, status)
+  const { t } = useT()
+  const text = t(labelKey(kind, status))
   const tone =
     kind === 'stopped' || kind === 'flagged' ? 'stop' : status === 'cant' ? 'warn' : status === 'checking' ? 'wait' : 'ok'
 
@@ -83,7 +62,7 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
       <StopMark size={iconSize} />
     )
 
-  const srText = subject ? `${text} for ${subject}` : text
+  const srText = subject ? t('badge.for', { label: text, who: subject }) : text
   const body = (
     <>
       <span className={`badge-icon ${status === 'checking' ? 'is-checking' : ''}`}>{icon}</span>
@@ -102,7 +81,7 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
     )
   }
 
-  const ex = explainers[kind]
+  const ex = { proves: t(`ex.${kind}.p` as Key), doesnt: t(`ex.${kind}.d` as Key) }
   return (
     <span className="badge-wrap" ref={wrapRef}>
       <button
@@ -110,19 +89,19 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
         className={`badge badge-${tone} badge-${size} badge-button`}
         aria-expanded={open}
         aria-controls={popId}
-        aria-label={`${srText}. What does this prove?`}
+        aria-label={`${srText}. ${t('badge.ask')}`}
         onClick={() => setOpen((o) => !o)}
       >
         {body}
       </button>
       {open && (
-        <span className="badge-pop" id={popId} role="dialog" aria-label={`What "${text}" proves`}>
+        <span className="badge-pop" id={popId} role="dialog" aria-label={`${t('pop.proves')}: ${text}`}>
           <span className="pop-row">
-            <strong>What this proves</strong>
+            <strong>{t('pop.proves')}</strong>
             <span>{ex.proves}</span>
           </span>
           <span className="pop-row">
-            <strong>What it doesn't share</strong>
+            <strong>{t('pop.doesnt')}</strong>
             <span>{ex.doesnt}</span>
           </span>
         </span>

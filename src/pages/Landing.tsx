@@ -8,6 +8,7 @@ import { ArrowRight, HumanMark, ReceiptMark, ShieldMark } from '../components/ic
 import { Wordmark } from '../components/Wordmark'
 import './landing.css'
 import { isStill, useStill } from '../a11y'
+import { LangToggle, useT } from '../i18n'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -65,14 +66,15 @@ function HeroStage() {
 }
 
 const callBeats = [
-  { count: '0 of 3', line: 'Four faces join the payments call.' },
-  { count: '1 of 3', line: 'Wanjiru is confirmed, on the phone she registered.' },
-  { count: '2 of 3', line: 'Brian is confirmed too.' },
-  { count: "Can't confirm", line: "David looks right and sounds right. But this isn't his phone." },
-]
+  { count: 'beats.c0', line: 'beats.l0' },
+  { count: 'beats.c1', line: 'beats.l1' },
+  { count: 'beats.c2', line: 'beats.l2' },
+  { count: 'beats.c3', line: 'beats.l3' },
+] as const
 
 export function Landing() {
   const root = useRef<HTMLDivElement>(null)
+  const { t } = useT()
   const [stage, setStage] = useState(0)
   const sealedRows = [
     { label: 'ID number', value: '2846 1937', tilt: -3 },
@@ -220,10 +222,11 @@ export function Landing() {
           <Wordmark />
         </a>
         <nav aria-label="Main">
-          <a href="#signals">What it proves</a>
-          <a href="#privacy">Privacy</a>
+          <a href="#signals">{t('nav.proves')}</a>
+          <a href="#privacy">{t('nav.privacy')}</a>
+          <LangToggle />
           <a href="#/demo/1" className="btn btn-primary btn-small">
-            Try the demo
+            {t('nav.demo')}
           </a>
         </nav>
       </header>
@@ -232,28 +235,22 @@ export function Landing() {
         {/* ───────── Hero ───────── */}
         <section className="hero band-lime">
           <div className="hero-copy">
-            <p className="hero-story">
-              A finance worker joined a video call with his CFO and colleagues, then sent $25&nbsp;million. Everyone else on
-              that call was a deepfake.
-            </p>
-            <h1 aria-label="Know who's really on the call.">
+            <p className="hero-story">{t('hero.story')}</p>
+            <h1 aria-label={t('hero.h1')}>
               <span className="hero-line" aria-hidden="true">
-                <span>Know who's</span>
+                <span>{t('hero.l1')}</span>
               </span>
               <span className="hero-line" aria-hidden="true">
-                <span>really on</span>
+                <span>{t('hero.l2')}</span>
               </span>
               <span className="hero-line" aria-hidden="true">
-                <span>the call.</span>
+                <span>{t('hero.l3')}</span>
               </span>
             </h1>
-            <p className="hero-sub">
-              Faces and voices can be faked in minutes. Proofline checks the person, not the picture, and tells you what it
-              found in plain words. Your ID never leaves your phone.
-            </p>
+            <p className="hero-sub">{t('hero.sub')}</p>
             <div className="hero-actions">
               <a href="#/demo/1" className="btn btn-primary btn-big">
-                Try the demo <ArrowRight />
+                {t('hero.try')} <ArrowRight />
               </a>
               <PlayStoryButton className="btn btn-ghost btn-big" />
             </div>
@@ -283,12 +280,12 @@ export function Landing() {
         <section className="scroll-call" aria-labelledby="call-h">
           <div className="scroll-call-pin">
             <div className="scroll-call-copy">
-              <h2 id="call-h">Watch the call</h2>
+              <h2 id="call-h">{t('beats.h2')}</h2>
               <p className="beat-count" aria-hidden="true">
-                {callBeats[stage].count}
+                {t(callBeats[stage].count)}
               </p>
               <p className="beat-line" aria-live="polite">
-                {callBeats[stage].line}
+                {t(callBeats[stage].line)}
               </p>
               <div className="beat-dots" aria-hidden="true">
                 {callBeats.map((_, i) => (
@@ -296,7 +293,7 @@ export function Landing() {
                 ))}
               </div>
               <p className="beat-hint" aria-hidden="true">
-                keep scrolling ↓
+                {t('beats.hint')}
               </p>
             </div>
             <div className="scroll-call-stage">
