@@ -38,4 +38,4 @@ npm install
 npm run dev
 ```
 
-Built with React, TypeScript and Vite. Typefaces: Bricolage Grotesque and Figtree. AI-assisted tools were used during development, as the hackathon rules allow.
+Built with React, TypeScript and Vite. Type follows sweet-tape.com: Inter Tight for text, and Futura PT Condensed for headlines when an Adobe Fonts kit is added (Barlow Condensed is the free fallback). AI-assisted tools were used during development, as the hackathon rules allow.

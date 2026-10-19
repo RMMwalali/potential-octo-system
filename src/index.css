@@ -1,8 +1,10 @@
 /* ───────── Tokens ───────── */
 :root {
-  /* Swap this one line to change the display typeface everywhere. */
-  --font-display: 'Bricolage Grotesque Variable', 'Figtree Variable', system-ui, sans-serif;
-  --font-body: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Type from sweet-tape.com. Futura PT Condensed is a licensed Adobe Fonts face:
+     it renders if you add your own Adobe Fonts kit to index.html; otherwise
+     Barlow Condensed (free, OFL) stands in. Inter Tight matches their body text. */
+  --font-display: futura-pt-condensed, 'Futura PT Condensed', 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --paper: #eef1ec;
   --surface: #fafbf8;
@@ -77,22 +79,23 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2.6rem, 6.4vw, 4.75rem);
-  font-weight: 750;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  font-size: clamp(3.2rem, 8vw, 6.25rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
 }
 
 h2 {
-  font-size: clamp(1.75rem, 3.2vw, 2.4rem);
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.005em;
+  line-height: 1;
 }
 
 h3 {
-  font-size: 1.2rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.1;
 }
 
 p {
@@ -252,14 +255,14 @@ main:focus {
 
 .wordmark-text {
   font-family: var(--font-display);
-  font-weight: 750;
-  font-size: 1.35rem;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  font-size: 1.7rem;
+  letter-spacing: 0;
   color: var(--ink);
 }
 
 .wordmark-small .wordmark-text {
-  font-size: 1.1rem;
+  font-size: 1.35rem;
 }
 
 /* ───────── Badges ───────── */
@@ -457,7 +460,7 @@ main:focus {
 }
 
 .hero-copy h1 {
-  max-width: 11ch;
+  max-width: 10ch;
 }
 
 .hero-lede {
@@ -827,7 +830,7 @@ main:focus {
   content: counter(step);
   font-family: var(--font-display);
   font-weight: 750;
-  font-size: 2.2rem;
+  font-size: 2.8rem;
   line-height: 1;
   color: var(--forest);
   margin-bottom: var(--s2);
@@ -1168,7 +1171,7 @@ main:focus {
 }
 
 .setup-body h3 {
-  font-size: 1.35rem;
+  font-size: 1.6rem;
 }
 
 .setup-sub {
@@ -1522,9 +1525,9 @@ main:focus {
 
 .bank-amount {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 5vw, 3.4rem);
-  font-weight: 750;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.8rem, 6vw, 4.4rem);
+  font-weight: 700;
+  letter-spacing: 0;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1627,7 +1630,7 @@ main:focus {
 }
 
 .confirm h3 {
-  font-size: 1.4rem;
+  font-size: 1.75rem;
 }
 
 .confirm-detail {
@@ -1665,7 +1668,7 @@ main:focus {
 }
 
 .surface > h3 {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
 }
 
 .post,
