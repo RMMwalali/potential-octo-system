@@ -1,13 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Badge } from '../../components/Badge'
 import { Phone } from '../../components/Phone'
 import { PhoneIcon } from '../../components/icons'
 import { amount, company, payee } from '../../data'
 
-type Stage = 'review' | 'waiting' | 'stopped' | 'approved'
+type Stage = 'review' | 'waiting' | 'stopped' | 'approved' | 'timeout' | 'cancelled'
+
+const WINDOW = 5 * 60 // seconds David has to answer
 
 export function Wire({ onDone }: { onDone: () => void }) {
   const [stage, setStage] = useState<Stage>('review')
+  const [left, setLeft] = useState(WINDOW)
+
+  // Count down David's answer window while we wait.
+  useEffect(() => {
+    if (stage !== 'waiting') return
+    setLeft(WINDOW)
+    const id = setInterval(() => setLeft((s) => Math.max(0, s - 1)), 1000)
+    return () => clearInterval(id)
+  }, [stage])
+
+  useEffect(() => {
+    if (stage === 'waiting' && left === 0) setStage('timeout')
+  }, [left, stage])
+
+  const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`
 
   return (
     <div className="wire">
@@ -61,10 +78,53 @@ export function Wire({ onDone }: { onDone: () => void }) {
                 <span className="pulse" aria-hidden="true">
                   <PhoneIcon size={22} />
                 </span>
+                <div className="bank-wait-text">
+                  <p>
+                    <strong>Waiting for David to confirm on his own phone.</strong> Proofline sent the request to the
+                    phone he registered, not to anyone on the call.
+                  </p>
+                  <p className="bank-countdown">
+                    <span className="countdown-num">{mmss}</span> left to answer. The payment stays on hold until then.
+                  </p>
+                  <button type="button" className="link-btn" onClick={() => setStage('timeout')}>
+                    Demo: skip ahead 5 minutes
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {stage === 'timeout' && (
+              <div className="bank-result is-hold">
+                <Badge kind="identity" status="cant" size="lg" reason="No answer from David" />
                 <p>
-                  <strong>Waiting for David to confirm on his own phone.</strong> Proofline sent the request to the phone
-                  he registered, not to anyone on the call.
+                  <strong>David didn't answer, so nothing has moved.</strong> A payment this size never goes out without
+                  him. It stays on hold, and Amara can ask again or cancel it.
                 </p>
+                <div className="bank-actions">
+                  <button type="button" className="btn btn-primary" onClick={() => setStage('waiting')}>
+                    Ask David again
+                  </button>
+                  <button type="button" className="btn btn-quiet" onClick={() => setStage('cancelled')}>
+                    Cancel payment
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {stage === 'cancelled' && (
+              <div className="bank-result">
+                <p>
+                  <strong>Payment cancelled.</strong> No money moved. The request and the call are saved for{' '}
+                  {company}'s security team.
+                </p>
+                <div className="bank-actions">
+                  <button type="button" className="btn btn-quiet" onClick={() => setStage('review')}>
+                    Start over
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={onDone}>
+                    See Proofline everywhere else
+                  </button>
+                </div>
               </div>
             )}
 
@@ -103,6 +163,7 @@ export function Wire({ onDone }: { onDone: () => void }) {
                 <p className="confirm-app">Proofline</p>
                 <h3>Did you ask Amara to send {amount}?</h3>
                 <p className="confirm-detail">To {payee}, Hong Kong. Requested a minute ago on a Huddle call.</p>
+                <p className="confirm-timer">Expires in {mmss}</p>
                 <button type="button" className="btn btn-stop btn-block" onClick={() => setStage('stopped')} data-tour="wire-no">
                   No, I didn't ask for this
                 </button>
@@ -114,7 +175,11 @@ export function Wire({ onDone }: { onDone: () => void }) {
               <div className="confirm confirm-idle">
                 <p className="confirm-time">9:41</p>
                 <p className="confirm-idle-text">
-                  {stage === 'stopped' ? 'You stopped a payment request. Thanks, David.' : 'No requests'}
+                  {stage === 'stopped'
+                    ? 'You stopped a payment request. Thanks, David.'
+                    : stage === 'timeout'
+                      ? 'Missed: 1 payment request from Proofline'
+                      : 'No requests'}
                 </p>
               </div>
             )}

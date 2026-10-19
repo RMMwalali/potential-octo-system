@@ -1958,3 +1958,72 @@ body:has(.tour-bar) .demo-foot {
 .tile.is-fake .tile-scan {
   display: none;
 }
+
+/* ───────── Payment edge cases ───────── */
+.bank-wait-text {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.bank-countdown {
+  font-size: 0.95rem;
+}
+
+.countdown-num {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px;
+}
+
+.bank-result.is-hold {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+}
+
+.bank-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.confirm-timer {
+  font-weight: 700;
+  color: var(--warn-ink);
+  font-variant-numeric: tabular-nums;
+  margin-top: -6px;
+  margin-bottom: 6px;
+}
+
+/* ───────── Lost phone ───────── */
+.lost {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-top: 8px;
+  padding: 20px 24px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+}
+
+.lost h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 750;
+  font-size: 1.05rem;
+}
+
+.lost p {
+  font-size: 0.98rem !important;
+  color: var(--ink) !important;
+}
+
+.lost-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

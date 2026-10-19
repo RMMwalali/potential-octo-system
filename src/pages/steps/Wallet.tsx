@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Phone } from '../../components/Phone'
-import { EyeIcon, EyeOffIcon } from '../../components/icons'
+import { EyeIcon, EyeOffIcon, PhoneIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
 import { callApp, company } from '../../data'
 
@@ -32,6 +32,7 @@ export function Wallet({ onDone }: { onDone: () => void }) {
           <li>Optional details are off-by-default switches she can see and change.</li>
           <li>A share log answers "who knows what about me?" at any time.</li>
         </ul>
+        <LostPhone />
       </div>
 
       <Phone label="Amara's phone, Proofline wallet" owner="Amara's phone">
@@ -132,5 +133,56 @@ export function Wallet({ onDone }: { onDone: () => void }) {
         </div>
       </Phone>
     </div>
+  )
+}
+
+/** What happens when a phone is lost or stolen: cancel it, then re-verify in person. */
+function LostPhone() {
+  const [state, setState] = useState<'idle' | 'confirm' | 'cancelled'>('idle')
+  return (
+    <section className="lost" aria-labelledby="lost-h" aria-live="polite">
+      <h3 id="lost-h">
+        <PhoneIcon size={18} /> Lost your phone?
+      </h3>
+      {state === 'idle' && (
+        <>
+          <p>
+            Amara can cancel it from any browser or at the security desk. Whoever has the old phone can't use it to prove
+            they're her.
+          </p>
+          <button type="button" className="btn btn-quiet" onClick={() => setState('confirm')}>
+            Cancel Amara's old phone
+          </button>
+        </>
+      )}
+      {state === 'confirm' && (
+        <>
+          <p>
+            <strong>Cancel Proofline on the old phone?</strong> This can't be undone. She'll verify again in person, on her
+            new phone, with her ID.
+          </p>
+          <div className="lost-actions">
+            <button type="button" className="btn btn-stop" onClick={() => setState('cancelled')}>
+              Yes, cancel it
+            </button>
+            <button type="button" className="btn btn-quiet" onClick={() => setState('idle')}>
+              Keep it
+            </button>
+          </div>
+        </>
+      )}
+      {state === 'cancelled' && (
+        <>
+          <Badge kind="identity" status="cant" size="sm" reason="Old phone cancelled" />
+          <p>
+            <strong>Old phone cancelled.</strong> Any app that checks it now sees "Can't confirm identity". Next: visit the
+            security desk with her ID to set up the new phone.
+          </p>
+          <button type="button" className="link-btn" onClick={() => setState('idle')}>
+            Reset this demo
+          </button>
+        </>
+      )}
+    </section>
   )
 }
