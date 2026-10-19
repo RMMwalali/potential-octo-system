@@ -7,7 +7,7 @@ import { useT } from '../i18n'
  */
 type Beat = { step: number; caption: string; hold: number; click?: string }
 
-const beats: Beat[] = [
+const script: Beat[] = [
   { step: 1, caption: 'Amara sets up Proofline once, on her own phone.', hold: 2600, click: '[data-tour="verify-scan"]' },
   { step: 1, caption: 'Her ID is read on the phone. Nothing is uploaded.', hold: 2200, click: '[data-tour="verify-selfie"]' },
   { step: 1, caption: 'A quick selfie check proves she matches the ID.', hold: 2200, click: '[data-tour="verify-done"]' },
@@ -23,7 +23,18 @@ const beats: Beat[] = [
   { step: 5, caption: "That's Proofline: proof of the person, not the picture.", hold: 3000 },
 ]
 
-export const tourSeconds = Math.round(beats.reduce((s, b) => s + b.hold + (b.click ? 700 : 0), 0) / 1000)
+/**
+ * Pace: every moment stays up long enough to read its caption at a relaxed
+ * speed (~300 ms a word, plus time to watch the action), and never less than
+ * 1.3x the time its animation needs.
+ */
+const PRESS_MS = 900
+const beats: Beat[] = script.map((b) => {
+  const words = b.caption.split(/\s+/).length
+  return { ...b, hold: Math.round(Math.max(b.hold * 1.3, words * 300 + 1800)) }
+})
+
+export const tourSeconds = Math.round(beats.reduce((s, b) => s + b.hold + (b.click ? PRESS_MS : 0), 0) / 1000)
 
 type Tour = {
   playing: boolean
@@ -90,7 +101,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
         el.classList.remove('tour-target')
         el.click()
         advance()
-      }, 700)
+      }, PRESS_MS)
     },
     [advance],
   )

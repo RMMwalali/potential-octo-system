@@ -1,5 +1,5 @@
 {
-  "name": "potential-octo-system",
+  "name": "proofline",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -27,5 +27,8 @@
     "oxlint": "^1.88.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.4"
+  },
+  "engines": {
+    "node": ">=20.19"
   }
 }

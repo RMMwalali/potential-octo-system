@@ -1827,7 +1827,7 @@ main:focus {
 .tour-target {
   position: relative;
   z-index: 5;
-  animation: tour-ping 0.7s ease-out;
+  animation: tour-ping 0.9s ease-out;
   box-shadow: 0 0 0 4px #fff, 0 0 0 9px var(--orange) !important;
 }
 
