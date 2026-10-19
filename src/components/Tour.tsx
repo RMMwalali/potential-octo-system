@@ -15,7 +15,7 @@ const beats: Beat[] = [
   { step: 2, caption: 'Shared: a yes, nothing more. She joins the call.', hold: 2400, click: '[data-tour="wallet-join"]' },
   { step: 3, caption: 'Proofline checks everyone on the call, each on their own phone.', hold: 4200 },
   { step: 3, caption: "\"David\" looks and sounds right. But this isn't his phone.", hold: 3600, click: '[data-tour="call-continue"]' },
-  { step: 4, caption: 'Fake David pushes for USD 25 million. Amara presses approve.', hold: 3200, click: '[data-tour="wire-approve"]' },
+  { step: 4, caption: 'Fake David pushes for an urgent payment. Amara presses approve.', hold: 3200, click: '[data-tour="wire-approve"]' },
   { step: 4, caption: 'Proofline asks the real David, on the phone he registered.', hold: 3000, click: '[data-tour="wire-no"]' },
   { step: 4, caption: 'The real David never asked. No money moves.', hold: 3600, click: '[data-tour="wire-next"]' },
   { step: 5, caption: 'The same badges work everywhere: replies, dating, reviews.', hold: 3200, click: '.surface-replies .badge-button' },
@@ -191,11 +191,14 @@ export function PlayStoryButton({ className = 'btn btn-ghost' }: { className?: s
   const { t } = useT()
   if (playing) return null
   return (
-    <button type="button" className={className} onClick={start}>
+    <button type="button" className={className} onClick={start} aria-label={t('tour.play', { n: tourSeconds })}>
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
         <path d="M7 5v14l12-7z" fill="currentColor" />
       </svg>
-      {t('tour.play', { n: tourSeconds })}
+      <span className="play-long">{t('tour.play', { n: tourSeconds })}</span>
+      <span className="play-short" aria-hidden="true">
+        Play
+      </span>
     </button>
   )
 }

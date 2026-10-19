@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { TourProvider } from './components/Tour'
-import { A11yPanel } from './components/A11yPanel'
 import { LangProvider } from './i18n'
 import { NotesProvider } from './components/Notes'
 
@@ -49,7 +48,6 @@ export default function App() {
       <Suspense fallback={<div className="route-loading" aria-hidden="true" />}>
         {route.page === 'demo' ? <Demo step={route.step} /> : <Landing />}
       </Suspense>
-      <A11yPanel />
     </TourProvider>
     </NotesProvider>
     </LangProvider>

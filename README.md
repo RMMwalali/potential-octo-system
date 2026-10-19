@@ -6,7 +6,7 @@ Built for **Hyperbloom October 2026: UI/UX and Web Design**. This is a design pr
 
 ## The story the demo tells
 
-A finance officer at a Nairobi logistics firm joins a call with her "CFO", who asks her to send USD 25 million. It mirrors a real 2024 case where every other person on a call was a deepfake.
+A finance officer at a Nairobi logistics firm joins a video call with her "CFO", who pushes her to send an urgent payment. The CFO on the call is a deepfake.
 
 1. **Verify once** – Amara scans her ID and does a selfie check on her own phone. Nothing is uploaded.
 2. **Her wallet** – the call app asks to confirm it's her. She sees *what they'll see* and *what they'll never see* side by side, and chooses.
@@ -24,7 +24,7 @@ A finance officer at a Nairobi logistics firm joins a call with her "CFO", who a
 
 ## Design decisions
 
-- **Two questions, kept apart.** "Is this a real person?" and "Is this the right person?" get different badges. The scammers in the real case were human, so a "not a bot" badge alone would have stayed green.
+- **Two questions, kept apart.** "Is this a real person?" and "Is this the right person?" get different badges. Deepfake scammers are real humans, so a "not a bot" badge alone would stay green.
 - **The two-second rule.** Every badge says what it proves in words. Shape carries meaning too (shield, circle, receipt, octagon), so nothing relies on colour alone.
 - **Privacy you can see.** Every request shows what the app learns and what it never sees, before you agree. A share log answers "who knows what about me?"
 - **Tap to explain.** Any badge opens a short "what this proves / what it doesn't share" note.
@@ -36,7 +36,8 @@ A finance officer at a Nairobi logistics firm joins a call with her "CFO", who a
 - Full keyboard path, visible focus rings, skip link, focus moved to each new demo step
 - Screen-reader labels on badges ("Identity confirmed for Wanjiru Kamau") and live regions for status changes
 - Respects reduced-motion settings
-- Responsive down to 360px phones
+- Tested end to end at 320, 360, 390, 414, 768, 1024, 1280 and 1440px wide: no sideways scrolling, no clipped text, no text over text
+- On phones, notes, language and display settings fold into one Settings menu so the header stays a single row
 - English and Kiswahili on the key screens (hero, the call, badges, the payment step, demo navigation), with the page language set for screen readers. The Swahili should be reviewed by a native speaker before any real launch.
 - Display settings panel: bigger text, high contrast and motion off, remembered per visitor
 - An in-person path for people without an ID to hand. There is deliberately no vouching by other accounts: if one fake account got verified, it could vouch for the next.
@@ -48,4 +49,4 @@ npm install
 npm run dev
 ```
 
-Built with React, TypeScript and Vite. Headlines in Bowlby One, text in Inter Tight, notes in Nothing You Could Do (all free, OFL). 3D hero in three.js; scroll animation with GSAP ScrollTrigger. Visual direction inspired by sweet-tape.com. AI-assisted tools were used during development, as the hackathon rules allow.
+Built with React, TypeScript and Vite. Headlines in Bowlby One, text in Inter Tight, notes in Nothing You Could Do (all free, OFL). 3D hero in three.js; intro animation with GSAP. Palette: navy, sky blue and cobalt, with orange (blue's complement) reserved for warnings; every text/background pair passes WCAG AA. AI-assisted tools were used during development, as the hackathon rules allow.

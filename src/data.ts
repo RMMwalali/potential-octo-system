@@ -20,7 +20,7 @@ export const people: Record<string, Person> = {
     initials: 'AN',
     skin: '#8A5A3C',
     shirt: '#2F6B5A',
-    backdrop: '#DCE6DE',
+    backdrop: '#DCE3EE',
   },
   david: {
     id: 'david',
@@ -50,11 +50,11 @@ export const people: Record<string, Person> = {
     initials: 'BM',
     skin: '#4E3121',
     shirt: '#5A5F2E',
-    backdrop: '#E2E4D3',
+    backdrop: '#E4E6EE',
   },
 }
 
 export const company = 'Kilima Freight'
 export const callApp = 'Huddle'
 export const payee = 'Meridian Trade Ltd'
-export const amount = 'USD 25,000,000'
+export const amount = 'USD 1,240,000'

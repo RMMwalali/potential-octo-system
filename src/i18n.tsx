@@ -13,8 +13,6 @@ const en = {
   'nav.demo': 'Try the demo',
   'lang.label': 'Language',
 
-  'hero.story':
-    'A finance worker joined a video call with his CFO and colleagues, then sent $25 million. Everyone else on that call was a deepfake.',
   'hero.h1': "Know who's really on the call.",
   'hero.l1': "Know who's",
   'hero.l2': 'really on',
@@ -155,8 +153,6 @@ const sw: Record<Key, string> = {
   'nav.demo': 'Jaribu onyesho',
   'lang.label': 'Lugha',
 
-  'hero.story':
-    'Mfanyakazi wa fedha alijiunga na simu ya video na afisa mkuu wa fedha na wenzake, kisha akatuma dola milioni 25. Kila mtu mwingine kwenye simu hiyo alikuwa bandia (deepfake).',
   'hero.h1': 'Jua nani yuko kweli kwenye simu.',
   'hero.l1': 'Jua nani',
   'hero.l2': 'yuko kweli',

@@ -3,11 +3,12 @@ import { isStill } from '../../a11y'
 import { Phone } from '../../components/Phone'
 import { FaceScanIcon, IdCardIcon, LockIcon, WalletIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
-import { Spot } from '../../components/Notes'
+import { Spot, useNotes } from '../../components/Notes'
 
 const stages = ['Scan your ID', 'Take a quick selfie', 'Saved to your wallet'] as const
 
 export function Verify({ onDone }: { onDone: () => void }) {
+  const { on: notesOn } = useNotes()
   const [stage, setStage] = useState(0)
   const [busy, setBusy] = useState(false)
   const [alt, setAlt] = useState(false)
@@ -29,11 +30,13 @@ export function Verify({ onDone }: { onDone: () => void }) {
           Kilima Freight asks every finance staff member to set up Proofline. It takes about a minute, and nothing she
           scans is uploaded.
         </p>
+        {notesOn && (
         <ul className="design-notes" aria-label="Design notes">
           <li>One task per screen, with progress shown in words and as a bar.</li>
           <li>Every step says where the data goes before Amara agrees.</li>
           <li>No passport? There's a path for that too.</li>
         </ul>
+        )}
       </div>
 
       <Phone label="Amara's phone, Proofline setup" owner="Amara's phone">

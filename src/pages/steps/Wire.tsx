@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { isStill } from '../../a11y'
 import { Badge } from '../../components/Badge'
 import { Phone } from '../../components/Phone'
 import { PhoneIcon } from '../../components/icons'
@@ -27,6 +28,15 @@ export function Wire({ onDone }: { onDone: () => void }) {
   }, [left, stage])
 
   const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`
+  const davidRef = useRef<HTMLDivElement>(null)
+
+  // When the layout is stacked (phones, small tablets), David's phone sits below the fold:
+  // bring it into view the moment the request goes out, so the question isn't missed.
+  useEffect(() => {
+    if (stage !== 'waiting' || window.innerWidth > 900) return
+    const t = setTimeout(() => davidRef.current?.scrollIntoView({ behavior: isStill() ? 'auto' : 'smooth', block: 'center' }), 250)
+    return () => clearTimeout(t)
+  }, [stage])
   const { t } = useT()
 
   return (
@@ -159,7 +169,7 @@ export function Wire({ onDone }: { onDone: () => void }) {
           </div>
         </section>
 
-        <div className={`david-phone ${stage === 'waiting' ? 'is-ringing' : ''}`}>
+        <div ref={davidRef} className={`david-phone ${stage === 'waiting' ? 'is-ringing' : ''}`}>
           <Phone label={t('wire.phone.label')} owner={t('call.phone.who')}>
             {stage === 'waiting' ? (
               <div className="confirm">

@@ -173,11 +173,11 @@ function tileTexture(p: Person, hair: Hair, face: Face, light = false): THREE.Ca
   ctx.clip()
 
   if (face === 'warning') {
-    ctx.fillStyle = '#ff6a13'
+    ctx.fillStyle = '#ff7a1a'
     ctx.fillRect(0, 0, TW, TH)
     // diagonal hazard stripes, quiet
     ctx.globalAlpha = 0.12
-    ctx.fillStyle = '#0b2412'
+    ctx.fillStyle = '#0b1f4a'
     for (let i = -TH; i < TW; i += 56) {
       ctx.beginPath()
       ctx.moveTo(i, TH)
@@ -187,7 +187,7 @@ function tileTexture(p: Person, hair: Hair, face: Face, light = false): THREE.Ca
       ctx.fill()
     }
     ctx.globalAlpha = 1
-    ctx.fillStyle = '#0b2412'
+    ctx.fillStyle = '#0b1f4a'
     ctx.font = '64px "Bowlby One", "Arial Black", sans-serif'
     ctx.fillText("CAN'T", 40, 120)
     ctx.fillText('CONFIRM', 40, 196)
@@ -198,12 +198,12 @@ function tileTexture(p: Person, hair: Hair, face: Face, light = false): THREE.Ca
     ctx.fillText('face + voice can be faked', 42, 374)
   } else {
     drawPerson(ctx, p, hair)
-    if (face === 'confirmed') pill(ctx, 'IDENTITY CONFIRMED', 22, 22, '#c9ff3b', '#0a3a1b')
-    else pill(ctx, 'CHECKING…', 22, 22, '#ecf7e4', '#34493b', true)
+    if (face === 'confirmed') pill(ctx, 'IDENTITY CONFIRMED', 22, 22, '#dce7ff', '#163e9e')
+    else pill(ctx, 'CHECKING…', 22, 22, '#eaf1ff', '#34435f', true)
     ctx.font = '800 34px "Inter Tight Variable", "Inter Tight", sans-serif'
     const w = ctx.measureText(p.name).width + 40
     roundRect(ctx, 22, TH - 84, w, 62, 14)
-    ctx.fillStyle = 'rgba(8,25,14,0.82)'
+    ctx.fillStyle = 'rgba(6,17,42,0.82)'
     ctx.fill()
     ctx.fillStyle = '#fff'
     ctx.fillText(p.name, 42, TH - 41)
@@ -237,7 +237,7 @@ function shieldMesh(light: boolean) {
   })
   g.center()
   const m = new THREE.MeshPhysicalMaterial({
-    color: '#0a3a1b',
+    color: '#0b1f4a',
     roughness: 0.32,
     metalness: 0.05,
     clearcoat: 1,
@@ -247,7 +247,7 @@ function shieldMesh(light: boolean) {
   shield.scale.setScalar(0.16)
 
   // The tick: two capsules, sitting proud of the front face.
-  const tickMat = new THREE.MeshStandardMaterial({ color: '#c9ff3b', emissive: '#7fbf00', emissiveIntensity: 0.35, roughness: 0.4 })
+  const tickMat = new THREE.MeshStandardMaterial({ color: '#a9c9ff', emissive: '#2b5ce6', emissiveIntensity: 0.45, roughness: 0.4 })
   const tick = new THREE.Group()
   const stroke = (ax: number, ay: number, bx: number, by: number) => {
     const len = Math.hypot(bx - ax, by - ay)
@@ -302,11 +302,11 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100)
     camera.position.set(0, 0, 11)
 
-    scene.add(new THREE.HemisphereLight('#f4ffd9', '#0a3a1b', 1.6))
+    scene.add(new THREE.HemisphereLight('#eef3ff', '#0b1f4a', 1.6))
     const key = new THREE.DirectionalLight('#ffffff', 2.4)
     key.position.set(4, 6, 8)
     scene.add(key)
-    const rim = new THREE.DirectionalLight('#c9ff3b', 1.4)
+    const rim = new THREE.DirectionalLight('#7da6f2', 1.4)
     rim.position.set(-6, -2, -4)
     scene.add(rim)
 
@@ -319,20 +319,20 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
     // Scanning ring around the shield
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(2.05, 0.025, light ? 6 : 12, light ? 90 : 160),
-      new THREE.MeshBasicMaterial({ color: '#0a3a1b', transparent: true, opacity: 0.35 }),
+      new THREE.MeshBasicMaterial({ color: '#0b1f4a', transparent: true, opacity: 0.35 }),
     )
     ring.rotation.x = 1.2
     root.add(ring)
     const dots: THREE.Mesh[] = []
     for (let i = 0; i < 3; i++) {
-      const d = new THREE.Mesh(new THREE.SphereGeometry(0.075, light ? 8 : 16, light ? 8 : 16), new THREE.MeshBasicMaterial({ color: '#ff6a13' }))
+      const d = new THREE.Mesh(new THREE.SphereGeometry(0.075, light ? 8 : 16, light ? 8 : 16), new THREE.MeshBasicMaterial({ color: '#ff7a1a' }))
       ring.add(d)
       dots.push(d)
     }
 
     // Tiles
     const slabGeo = new RoundedBoxGeometry(2.24, 1.42, 0.09, 4, 0.14)
-    const slabMat = new THREE.MeshStandardMaterial({ color: '#08190e', roughness: 0.6 })
+    const slabMat = new THREE.MeshStandardMaterial({ color: '#06112a', roughness: 0.6 })
     const planeGeo = new THREE.PlaneGeometry(2.14, 1.34)
     const made: { spec: TileSpec; group: THREE.Group; front: THREE.Mesh; baseY: number; phase: number }[] = []
     const textures: THREE.Texture[] = []
@@ -484,8 +484,8 @@ export function Hero3D({ onReady }: { onReady?: () => void }) {
         lastFlag = flag
         setFlagged(flag)
       }
-      tickMat.color.set(flag ? '#ff6a13' : '#c9ff3b')
-      tickMat.emissive.set(flag ? '#a33a00' : '#7fbf00')
+      tickMat.color.set(flag ? '#ff7a1a' : '#a9c9ff')
+      tickMat.emissive.set(flag ? '#a33a00' : '#2b5ce6')
 
       for (const m of made) {
         m.group.position.y = m.baseY + Math.sin(t * 0.9 + m.phase) * 0.12

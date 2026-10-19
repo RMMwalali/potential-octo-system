@@ -24,14 +24,29 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   return <NotesCtx.Provider value={{ on, toggle, openId, setOpenId }}>{children}</NotesCtx.Provider>
 }
 
-export function NotesToggle({ className = '' }: { className?: string }) {
-  const { on, toggle } = useNotes()
+export function NotesToggle({ className = '', onToggle }: { className?: string; onToggle?: () => void }) {
+  const { on, toggle: flip } = useNotes()
+  const toggle = () => {
+    flip()
+    onToggle?.()
+  }
   return (
-    <button type="button" className={`notes-toggle ${className}`} aria-pressed={on} onClick={toggle}>
+    <button
+      type="button"
+      className={`notes-toggle ${className}`}
+      aria-pressed={on}
+      aria-label="Designer's notes"
+      onClick={toggle}
+    >
       <span className="notes-toggle-dot" aria-hidden="true">
         {on ? '✓' : 'i'}
       </span>
-      Designer's notes
+      <span className="notes-long" aria-hidden="true">
+        Designer's notes
+      </span>
+      <span className="notes-short" aria-hidden="true">
+        Notes
+      </span>
     </button>
   )
 }

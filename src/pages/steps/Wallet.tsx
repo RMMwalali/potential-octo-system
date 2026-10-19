@@ -3,11 +3,12 @@ import { Phone } from '../../components/Phone'
 import { EyeIcon, EyeOffIcon, PhoneIcon } from '../../components/icons'
 import { Badge } from '../../components/Badge'
 import { callApp, company } from '../../data'
-import { Spot } from '../../components/Notes'
+import { Spot, useNotes } from '../../components/Notes'
 
 type Share = { app: string; what: string; when: string }
 
 export function Wallet({ onDone }: { onDone: () => void }) {
+  const { on: notesOn } = useNotes()
   const [employer, setEmployer] = useState(false)
   const [decision, setDecision] = useState<'pending' | 'shared' | 'declined'>('pending')
   const [log, setLog] = useState<Share[]>([
@@ -28,11 +29,13 @@ export function Wallet({ onDone }: { onDone: () => void }) {
           Before the payments call, {callApp} asks Proofline to confirm it's really Amara joining. She sees exactly who's
           asking, what they'll learn and what stays private.
         </p>
+        {notesOn && (
         <ul className="design-notes" aria-label="Design notes">
           <li>"What they see" and "What they never see" sit side by side on every request.</li>
           <li>Optional details are off-by-default switches she can see and change.</li>
           <li>A share log answers "who knows what about me?" at any time.</li>
         </ul>
+        )}
         <Spot n={3} title="Recovery kills the old phone first" note="Losing a phone shouldn't mean losing your identity to whoever finds it. Cancelling is one step with an in-page confirmation, and getting back in needs a face-to-face check.">
           <LostPhone />
         </Spot>

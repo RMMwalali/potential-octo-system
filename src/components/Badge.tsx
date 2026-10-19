@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { useT, type Key } from '../i18n'
 import { HumanMark, ReceiptMark, ShieldMark, StopMark } from './icons'
 
@@ -31,6 +31,20 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
   const [open, setOpen] = useState(false)
   const popId = useId()
   const wrapRef = useRef<HTMLSpanElement>(null)
+  const popRef = useRef<HTMLSpanElement>(null)
+  const [shift, setShift] = useState(0)
+
+  // Keep the pop-up on screen: nudge it left or right if it would run past an edge.
+  useLayoutEffect(() => {
+    if (!open || !popRef.current) return
+    const el = popRef.current
+    el.style.transform = 'none' // measure from the natural position
+    const r = el.getBoundingClientRect()
+    const gutter = 12
+    const next = r.right > window.innerWidth - gutter ? window.innerWidth - gutter - r.right : r.left < gutter ? gutter - r.left : 0
+    el.style.transform = next ? `translateX(${next}px)` : ''
+    setShift(next)
+  }, [open])
   const { t } = useT()
   const text = t(labelKey(kind, status))
   const tone =
@@ -95,7 +109,14 @@ export function Badge({ kind, status = 'confirmed', subject, explain, size = 'md
         {body}
       </button>
       {open && (
-        <span className="badge-pop" id={popId} role="dialog" aria-label={`${t('pop.proves')}: ${text}`}>
+        <span
+          className="badge-pop"
+          id={popId}
+          ref={popRef}
+          role="dialog"
+          aria-label={`${t('pop.proves')}: ${text}`}
+          style={shift ? { transform: `translateX(${shift}px)` } : undefined}
+        >
           <span className="pop-row">
             <strong>{t('pop.proves')}</strong>
             <span>{ex.proves}</span>

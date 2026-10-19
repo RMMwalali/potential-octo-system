@@ -7,8 +7,8 @@ import { Everywhere } from './steps/Everywhere'
 import { Verify } from './steps/Verify'
 import { Wallet } from './steps/Wallet'
 import { Wire } from './steps/Wire'
-import { LangToggle, useT, type Key } from '../i18n'
-import { NotesToggle } from '../components/Notes'
+import { useT, type Key } from '../i18n'
+import { HeaderTools } from '../components/HeaderTools'
 
 const stepKeys: Key[] = ['demo.s1', 'demo.s2', 'demo.s3', 'demo.s4', 'demo.s5']
 
@@ -92,8 +92,7 @@ export function Demo({ step }: { step: number }) {
           </ol>
         </nav>
         <div className="demo-tools">
-          <NotesToggle />
-          <LangToggle />
+          <HeaderTools />
           <PlayStoryButton className="btn btn-primary btn-small demo-play" />
         </div>
       </header>
